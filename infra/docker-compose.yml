@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: scorelineiq
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: scorelineiq
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scorelineiq"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+  prediction-api:
+    build:
+      context: ../apps/prediction-api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://scorelineiq:${POSTGRES_PASSWORD:-changeme}@postgres:5432/scorelineiq
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  web:
+    build:
+      context: ../apps/web
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://scorelineiq:${POSTGRES_PASSWORD:-changeme}@postgres:5432/scorelineiq
+      PREDICTION_API_URL: http://prediction-api:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      prediction-api:
+        condition: service_started
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
+  redis_data:

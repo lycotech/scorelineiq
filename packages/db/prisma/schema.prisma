@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model League {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  country   String
+  externalId String  @unique
+  teams     Team[]
+  fixtures  Fixture[]
+  accuracyStats AccuracyStat[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  externalId    String   @unique
+  leagueId      String
+  league        League   @relation(fields: [leagueId], references: [id])
+  homeFixtures  Fixture[] @relation("HomeTeam")
+  awayFixtures  Fixture[] @relation("AwayTeam")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([leagueId])
+}
+
+enum FixtureStatus {
+  SCHEDULED
+  LIVE
+  FINISHED
+  POSTPONED
+  CANCELLED
+}
+
+model Fixture {
+  id           String        @id @default(cuid())
+  externalId   String        @unique
+  slug         String        @unique
+  leagueId     String
+  league       League        @relation(fields: [leagueId], references: [id])
+  homeTeamId   String
+  homeTeam     Team          @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamId   String
+  awayTeam     Team          @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  kickoffAt    DateTime
+  status       FixtureStatus @default(SCHEDULED)
+  prediction   Prediction?
+  result       Result?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([leagueId])
+  @@index([kickoffAt])
+}
+
+model Prediction {
+  id                String   @id @default(cuid())
+  fixtureId         String   @unique
+  fixture           Fixture  @relation(fields: [fixtureId], references: [id])
+  homeWinProbability Float
+  drawProbability    Float
+  awayWinProbability Float
+  predictedScoreHome Int
+  predictedScoreAway Int
+  over25Probability  Float
+  bttsProbability    Float
+  confidence         Float
+  modelVersion       String
+  generatedAt        DateTime @default(now())
+
+  @@index([fixtureId])
+}
+
+enum ResultOutcome {
+  HOME_WIN
+  DRAW
+  AWAY_WIN
+}
+
+model Result {
+  id           String        @id @default(cuid())
+  fixtureId    String        @unique
+  fixture      Fixture       @relation(fields: [fixtureId], references: [id])
+  homeScore    Int
+  awayScore    Int
+  outcome      ResultOutcome
+  scoredAt     DateTime      @default(now())
+
+  @@index([fixtureId])
+}
+
+model AccuracyStat {
+  id          String   @id @default(cuid())
+  leagueId    String?
+  league      League?  @relation(fields: [leagueId], references: [id])
+  market      String
+  windowLabel String
+  totalCount  Int
+  hitCount    Int
+  hitRate     Float
+  computedAt  DateTime @default(now())
+
+  @@index([leagueId])
+  @@index([market, windowLabel])
+}

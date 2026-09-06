@@ -1,0 +1,3 @@
+scorelineiq.com, www.scorelineiq.com {
+	reverse_proxy web:3000
+}
