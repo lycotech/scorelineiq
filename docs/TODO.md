@@ -17,9 +17,9 @@ reviewable.
 - [x] Sign up for Football-Data.org free tier, store API key in `.env`
 
 ## Phase 1 — Data Pipeline
-- [ ] `ingest-fixtures` job (fetch next 48h, upsert into Postgres)
-- [ ] `sync-teams-and-form` job (weekly standings/form refresh)
-- [ ] `score-results` job (pull final scores, write `Result`)
+- [x] `ingest-fixtures` job (fetch next 48h, upsert into Postgres)
+- [x] `sync-teams-and-form` job (weekly standings/form refresh)
+- [x] `score-results` job (pull final scores, write `Result`)
 - [ ] Wire BullMQ + Redis scheduling for the above
 - [ ] Sentry integration for job failures
 
