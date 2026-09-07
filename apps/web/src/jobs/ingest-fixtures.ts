@@ -1,74 +1,12 @@
-import { prisma, FixtureStatus } from "@scorelineiq/db";
+import { prisma } from "@scorelineiq/db";
 import { slugify } from "../lib/slugify";
-
-const FOOTBALL_DATA_BASE_URL = "https://api.football-data.org/v4";
-
-const KNOWN_STATUSES: Record<string, FixtureStatus> = {
-  SCHEDULED: FixtureStatus.SCHEDULED,
-  TIMED: FixtureStatus.SCHEDULED,
-  IN_PLAY: FixtureStatus.LIVE,
-  PAUSED: FixtureStatus.LIVE,
-  FINISHED: FixtureStatus.FINISHED,
-  AWARDED: FixtureStatus.FINISHED,
-  POSTPONED: FixtureStatus.POSTPONED,
-  SUSPENDED: FixtureStatus.CANCELLED,
-  CANCELLED: FixtureStatus.CANCELLED,
-};
-
-interface FootballDataTeam {
-  id: number;
-  name: string;
-}
-
-interface FootballDataMatch {
-  id: number;
-  utcDate: string;
-  status: string;
-  area: { name: string };
-  competition: { id: number; name: string };
-  homeTeam: FootballDataTeam | null;
-  awayTeam: FootballDataTeam | null;
-}
-
-interface FootballDataMatchesResponse {
-  matches: FootballDataMatch[];
-}
-
-function mapStatus(rawStatus: string, fixtureExternalId: number): FixtureStatus {
-  const mapped = KNOWN_STATUSES[rawStatus];
-  if (!mapped) {
-    console.warn(
-      `[ingest-fixtures] unrecognized status "${rawStatus}" for fixture ${fixtureExternalId}, defaulting to SCHEDULED`,
-    );
-    return FixtureStatus.SCHEDULED;
-  }
-  return mapped;
-}
-
-function formatDate(date: Date): string {
-  return date.toISOString().slice(0, 10);
-}
-
-async function fetchMatches(dateFrom: string, dateTo: string): Promise<FootballDataMatch[]> {
-  const token = process.env.FOOTBALL_DATA_API_TOKEN;
-  if (!token) {
-    throw new Error("FOOTBALL_DATA_API_TOKEN is not set");
-  }
-
-  const url = `${FOOTBALL_DATA_BASE_URL}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`;
-  const response = await fetch(url, {
-    headers: { "X-Auth-Token": token },
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `Football-Data.org request failed: ${response.status} ${response.statusText}`,
-    );
-  }
-
-  const data = (await response.json()) as FootballDataMatchesResponse;
-  return data.matches;
-}
+import {
+  fetchMatches,
+  formatDate,
+  mapStatus,
+  type FootballDataMatch,
+  type FootballDataTeam,
+} from "../lib/football-data";
 
 async function upsertLeague(competition: FootballDataMatch["competition"], country: string) {
   const externalId = String(competition.id);
