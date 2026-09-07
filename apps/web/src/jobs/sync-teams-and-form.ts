@@ -1,4 +1,5 @@
 import { prisma } from "@scorelineiq/db";
+import { runJob } from "../lib/job-runner";
 
 const FOOTBALL_DATA_BASE_URL = "https://api.football-data.org/v4";
 
@@ -118,11 +119,4 @@ async function main() {
   );
 }
 
-main()
-  .catch((error) => {
-    console.error("[sync-teams-and-form] failed:", error);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+runJob("sync-teams-and-form", main);

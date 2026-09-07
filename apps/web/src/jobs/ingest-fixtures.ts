@@ -1,4 +1,5 @@
 import { prisma } from "@scorelineiq/db";
+import { runJob } from "../lib/job-runner";
 import { slugify } from "../lib/slugify";
 import {
   fetchMatches,
@@ -94,11 +95,4 @@ async function main() {
   );
 }
 
-main()
-  .catch((error) => {
-    console.error("[ingest-fixtures] failed:", error);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+runJob("ingest-fixtures", main);

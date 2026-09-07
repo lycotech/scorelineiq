@@ -20,8 +20,10 @@ reviewable.
 - [x] `ingest-fixtures` job (fetch next 48h, upsert into Postgres)
 - [x] `sync-teams-and-form` job (weekly standings/form refresh)
 - [x] `score-results` job (pull final scores, write `Result`)
-- [ ] Wire BullMQ + Redis scheduling for the above
-- [ ] Sentry integration for job failures
+- [x] Wire scheduling for the above (cron, not BullMQ — see
+      `infra/crontab`; no persistent worker needed at this scale)
+- [x] Sentry integration for job failures (no-ops until `SENTRY_DSN`
+      is set)
 
 ## Phase 2 — Prediction Engine
 - [ ] Implement Dixon-Coles/Poisson goal model in FastAPI

@@ -1,0 +1,11 @@
+# ScorelineIQ data pipeline — see docs/WORKFLOW.md for the full daily
+# schedule this is drawn from. Install on the VPS with:
+#   bash infra/scripts/install-cron.sh
+# Adjust REPO_DIR below if deployed somewhere other than /opt/scorelineiq.
+
+REPO_DIR=/opt/scorelineiq
+LOG_DIR=/var/log/scorelineiq
+
+0 6 * * *   cd $REPO_DIR && npm run ingest-fixtures --workspace=web >> $LOG_DIR/ingest-fixtures.log 2>&1
+15 6 * * *  cd $REPO_DIR && npm run sync-teams-and-form --workspace=web >> $LOG_DIR/sync-teams-and-form.log 2>&1
+0 */2 * * * cd $REPO_DIR && npm run score-results --workspace=web >> $LOG_DIR/score-results.log 2>&1

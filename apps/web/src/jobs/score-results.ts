@@ -1,5 +1,6 @@
 import { prisma, FixtureStatus, ResultOutcome } from "@scorelineiq/db";
 import { fetchMatches, formatDate, mapStatus } from "../lib/football-data";
+import { runJob } from "../lib/job-runner";
 
 function computeOutcome(homeScore: number, awayScore: number): ResultOutcome {
   if (homeScore > awayScore) return ResultOutcome.HOME_WIN;
@@ -92,11 +93,4 @@ async function main() {
   );
 }
 
-main()
-  .catch((error) => {
-    console.error("[score-results] failed:", error);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+runJob("score-results", main);
