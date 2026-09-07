@@ -8,12 +8,12 @@ reviewable.
 - [ ] Provision & harden VPS (SSH keys, UFW, fail2ban)
 - [ ] Cloudflare DNS + proxy for ScorelineIQ.com
 - [ ] Install Docker + Docker Compose on VPS
-- [ ] Scaffold Next.js 15 + TypeScript + Tailwind repo
-- [ ] Scaffold Prisma schema: `League`, `Team`, `Fixture`, `Prediction`,
+- [x] Scaffold Next.js 15 + TypeScript + Tailwind repo
+- [x] Scaffold Prisma schema: `League`, `Team`, `Fixture`, `Prediction`,
       `Result`, `AccuracyStat`
-- [ ] Scaffold FastAPI prediction-engine skeleton (health check only)
-- [ ] Write `docker-compose.yml` (web, api, postgres, redis)
-- [ ] GitHub repo + branch protection + Actions skeleton (lint/build)
+- [x] Scaffold FastAPI prediction-engine skeleton (health check only)
+- [x] Write `docker-compose.yml` (web, api, postgres, redis)
+- [x] GitHub repo + branch protection + Actions skeleton (lint/build)
 - [ ] Sign up for Football-Data.org free tier, store API key in `.env`
 
 ## Phase 1 — Data Pipeline
