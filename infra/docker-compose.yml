@@ -1,3 +1,5 @@
+name: scorelineiq
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -36,7 +38,8 @@ services:
 
   web:
     build:
-      context: ../apps/web
+      context: ..
+      dockerfile: apps/web/Dockerfile
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://scorelineiq:${POSTGRES_PASSWORD:-changeme}@postgres:5432/scorelineiq
