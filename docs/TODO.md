@@ -34,8 +34,10 @@ reviewable.
       cadence is confirmed against real cron runs)
 - [x] `nightly-accuracy` job (score predictions vs results, roll up
       accuracy stats by league/market/window)
-- [ ] Backtest against 2–3 months historical data; confirm beats naive
-      baseline before going live
+- [x] Backtest against 2–3 months historical data; confirm beats naive
+      baseline before going live (`scripts/backtest.py` — 52.0% 1X2 vs
+      44.6% naive baseline across 204 matches, 3 leagues; see commit
+      for full per-league breakdown)
 
 ## Phase 3 — Public Site / SEO
 - [ ] Homepage template (today/tomorrow fixtures, sorted by kickoff)
