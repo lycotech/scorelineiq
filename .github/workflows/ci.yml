@@ -15,11 +15,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      # npm ci is intentionally not used: package-lock.json is committed
-      # from Windows dev machines and doesn't carry resolvable entries
-      # for Linux's platform-specific optional native binaries
-      # (lightningcss, etc.) — confirmed the same way apps/web/Dockerfile
-      # documents it. npm install resolves fresh for this runner.
+      # package-lock.json is committed from Windows dev machines and
+      # pins lightningcss's optional native binary to the win32 build.
+      # `npm install` does NOT backfill a missing platform's resolution
+      # into an already-resolved lockfile entry — confirmed empirically,
+      # same reason apps/web/Dockerfile doesn't copy the lockfile into
+      # its build stage. Removing it here forces a fresh resolve for
+      # this runner's platform (Linux glibc).
+      - run: rm -f package-lock.json
       - run: npm install
       - run: npx prisma generate --schema packages/db/prisma/schema.prisma
         env:
