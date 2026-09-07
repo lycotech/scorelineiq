@@ -29,6 +29,22 @@ model Team {
   league        League   @relation(fields: [leagueId], references: [id])
   homeFixtures  Fixture[] @relation("HomeTeam")
   awayFixtures  Fixture[] @relation("AwayTeam")
+
+  // Current-season standings snapshot, refreshed weekly by
+  // sync-teams-and-form. Nullable because a team ingested from a
+  // fixture has no standings data until that job has run for its
+  // league at least once. Football-Data.org's free tier only exposes
+  // the TOTAL table (no home/away split) and often leaves `form` null.
+  played             Int?
+  won                Int?
+  draw               Int?
+  lost               Int?
+  goalsFor           Int?
+  goalsAgainst       Int?
+  points             Int?
+  form               String?
+  standingsUpdatedAt DateTime?
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
