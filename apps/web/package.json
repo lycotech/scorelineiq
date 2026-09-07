@@ -9,7 +9,8 @@
     "lint": "eslint",
     "ingest-fixtures": "tsx --env-file=.env src/jobs/ingest-fixtures.ts",
     "sync-teams-and-form": "tsx --env-file=.env src/jobs/sync-teams-and-form.ts",
-    "score-results": "tsx --env-file=.env src/jobs/score-results.ts"
+    "score-results": "tsx --env-file=.env src/jobs/score-results.ts",
+    "generate-predictions": "tsx --env-file=.env src/jobs/generate-predictions.ts"
   },
   "dependencies": {
     "@scorelineiq/db": "*",

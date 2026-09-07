@@ -26,10 +26,12 @@ reviewable.
       is set)
 
 ## Phase 2 — Prediction Engine
-- [ ] Implement Dixon-Coles/Poisson goal model in FastAPI
-- [ ] Add Elo-style team-strength adjustment
-- [ ] Output 1X2 / correct score top-3 / O-U 2.5 / BTTS probabilities
-- [ ] Persist predictions per fixture, generated on a daily schedule
+- [x] Implement Dixon-Coles/Poisson goal model in FastAPI
+- [x] Add Elo-style team-strength adjustment
+- [x] Output 1X2 / correct score top-3 / O-U 2.5 / BTTS probabilities
+- [x] Persist predictions per fixture, generated on a daily schedule
+      (`generate-predictions` job; add to `infra/crontab` once daily
+      cadence is confirmed against real cron runs)
 - [ ] `nightly-accuracy` job (score predictions vs results, roll up
       accuracy stats by league/market/window)
 - [ ] Backtest against 2–3 months historical data; confirm beats naive
