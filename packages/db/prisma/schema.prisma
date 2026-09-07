@@ -124,8 +124,8 @@ model Result {
 
 model AccuracyStat {
   id          String   @id @default(cuid())
-  leagueId    String?
-  league      League?  @relation(fields: [leagueId], references: [id])
+  leagueId    String
+  league      League   @relation(fields: [leagueId], references: [id])
   market      String
   windowLabel String
   totalCount  Int
@@ -133,6 +133,9 @@ model AccuracyStat {
   hitRate     Float
   computedAt  DateTime @default(now())
 
-  @@index([leagueId])
-  @@index([market, windowLabel])
+  // Always scoped to a league — an "overall across all leagues" figure
+  // is computed at read time (Phase 3) from these rows rather than
+  // stored as a leagueId-null row: Postgres treats NULL as distinct in
+  // unique constraints, which would break upsert-based idempotency here.
+  @@unique([leagueId, market, windowLabel])
 }

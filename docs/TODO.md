@@ -32,7 +32,7 @@ reviewable.
 - [x] Persist predictions per fixture, generated on a daily schedule
       (`generate-predictions` job; add to `infra/crontab` once daily
       cadence is confirmed against real cron runs)
-- [ ] `nightly-accuracy` job (score predictions vs results, roll up
+- [x] `nightly-accuracy` job (score predictions vs results, roll up
       accuracy stats by league/market/window)
 - [ ] Backtest against 2–3 months historical data; confirm beats naive
       baseline before going live
