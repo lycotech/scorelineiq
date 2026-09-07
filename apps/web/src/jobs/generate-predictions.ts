@@ -1,5 +1,6 @@
 import { prisma, FixtureStatus } from "@scorelineiq/db";
 import { runJob } from "../lib/job-runner";
+import { triggerRevalidate } from "../lib/revalidate";
 
 interface PredictResponse {
   home_win_probability: number;
@@ -83,6 +84,7 @@ async function generatePredictions() {
     },
     select: {
       id: true,
+      slug: true,
       leagueId: true,
       homeTeam: {
         select: { id: true, goalsFor: true, goalsAgainst: true, played: true, eloRating: true },
@@ -147,6 +149,8 @@ async function generatePredictions() {
           generatedAt: new Date(),
         },
       });
+
+      await triggerRevalidate(["/", `/match/${fixture.slug}`]);
 
       generated += 1;
     } catch (error) {

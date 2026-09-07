@@ -2,6 +2,7 @@ import { prisma, FixtureStatus, ResultOutcome, Prisma } from "@scorelineiq/db";
 import { updateEloRatings } from "../lib/elo";
 import { fetchMatches, formatDate, mapStatus } from "../lib/football-data";
 import { runJob } from "../lib/job-runner";
+import { triggerRevalidate } from "../lib/revalidate";
 
 function computeOutcome(homeScore: number, awayScore: number): ResultOutcome {
   if (homeScore > awayScore) return ResultOutcome.HOME_WIN;
@@ -35,8 +36,11 @@ async function scoreResults(dateFrom: string, dateTo: string) {
       where: { externalId: String(match.id) },
       select: {
         id: true,
+        slug: true,
         homeTeamId: true,
         awayTeamId: true,
+        kickoffAt: true,
+        league: { select: { slug: true } },
         result: { select: { id: true } },
       },
     });
@@ -102,6 +106,14 @@ async function scoreResults(dateFrom: string, dateTo: string) {
     }
 
     await prisma.$transaction(writes);
+
+    await triggerRevalidate([
+      "/",
+      `/match/${fixture.slug}`,
+      `/league/${fixture.league.slug}`,
+      `/predictions/${formatDate(fixture.kickoffAt)}`,
+      "/accuracy",
+    ]);
 
     recorded += 1;
   }

@@ -40,18 +40,26 @@ reviewable.
       for full per-league breakdown)
 
 ## Phase 3 — Public Site / SEO
-- [ ] Homepage template (today/tomorrow fixtures, sorted by kickoff)
-- [ ] Day-archive page template (`/predictions/[date]`)
-- [ ] League-hub page template (`/league/[slug]`)
-- [ ] Match-page template (`/match/[slug]`) with unique narrative text
-- [ ] Accuracy page template (`/accuracy`)
-- [ ] Static trust pages: about, how-it-works, privacy, terms,
-      responsible-gambling, contact
-- [ ] Structured data (SportsEvent, BreadcrumbList, FAQ schema)
-- [ ] ISR wiring (regenerate on schedule + on-demand post-kickoff)
-- [ ] Sitemap generation job (chunked, daily)
-- [ ] Submit sitemap to Google Search Console + Bing Webmaster Tools
-- [ ] Reserve fixed-height ad slot containers (no ads yet)
+- [x] Homepage template (today/tomorrow fixtures, sorted by kickoff)
+- [x] Day-archive page template (`/predictions/[date]`)
+- [x] League-hub page template (`/league/[slug]`)
+- [x] Match-page template (`/match/[slug]`) with unique narrative text
+- [x] Accuracy page template (`/accuracy`)
+- [x] Static trust pages: about, how-it-works, privacy, terms,
+      responsible-gambling
+- [ ] Contact page — deferred, no real contact address/method exists
+      yet to put on it
+- [x] Structured data (SportsEvent, BreadcrumbList, FAQ schema on
+      league hubs)
+- [x] ISR wiring: time-based `revalidate` per page, plus on-demand
+      `/api/revalidate` called by score-results/generate-predictions
+      after they write new data
+- [x] Sitemap generation (`app/sitemap.ts`, dynamic — regenerates on
+      every request rather than a separate daily job; chunking deferred
+      until fixture volume is large enough to need it)
+- [ ] Submit sitemap to Google Search Console + Bing Webmaster Tools —
+      needs a live domain and the user's GSC/Bing accounts
+- [x] Reserve fixed-height ad slot containers (no ads yet)
 
 ## Phase 4 — Monetization
 - [ ] Apply for Google AdSense (after ≥20–30 quality indexed pages +
