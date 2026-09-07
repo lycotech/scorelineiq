@@ -1,4 +1,5 @@
-import { prisma, FixtureStatus, ResultOutcome } from "@scorelineiq/db";
+import { prisma, FixtureStatus, ResultOutcome, Prisma } from "@scorelineiq/db";
+import { updateEloRatings } from "../lib/elo";
 import { fetchMatches, formatDate, mapStatus } from "../lib/football-data";
 import { runJob } from "../lib/job-runner";
 
@@ -12,6 +13,7 @@ async function scoreResults(dateFrom: string, dateTo: string) {
   const matches = await fetchMatches(dateFrom, dateTo);
 
   let recorded = 0;
+  let eloUpdated = 0;
   let skippedNotFinished = 0;
   let skippedUnknownFixture = 0;
   let skippedNoScore = 0;
@@ -31,7 +33,12 @@ async function scoreResults(dateFrom: string, dateTo: string) {
 
     const fixture = await prisma.fixture.findUnique({
       where: { externalId: String(match.id) },
-      select: { id: true },
+      select: {
+        id: true,
+        homeTeamId: true,
+        awayTeamId: true,
+        result: { select: { id: true } },
+      },
     });
 
     if (!fixture) {
@@ -42,8 +49,9 @@ async function scoreResults(dateFrom: string, dateTo: string) {
     }
 
     const outcome = computeOutcome(home, away);
+    const isFirstTimeScored = !fixture.result;
 
-    await prisma.$transaction([
+    const writes: Prisma.PrismaPromise<unknown>[] = [
       prisma.fixture.update({
         where: { id: fixture.id },
         data: { status: FixtureStatus.FINISHED },
@@ -62,13 +70,45 @@ async function scoreResults(dateFrom: string, dateTo: string) {
           outcome,
         },
       }),
-    ]);
+    ];
+
+    // Elo only moves on the result's first appearance — re-running this
+    // job (it's on a 2-hourly cron) must not re-apply the same result
+    // to a team's rating repeatedly.
+    if (isFirstTimeScored) {
+      const [homeTeam, awayTeam] = await Promise.all([
+        prisma.team.findUniqueOrThrow({
+          where: { id: fixture.homeTeamId },
+          select: { eloRating: true },
+        }),
+        prisma.team.findUniqueOrThrow({
+          where: { id: fixture.awayTeamId },
+          select: { eloRating: true },
+        }),
+      ]);
+      const updated = updateEloRatings(homeTeam.eloRating, awayTeam.eloRating, home, away);
+
+      writes.push(
+        prisma.team.update({
+          where: { id: fixture.homeTeamId },
+          data: { eloRating: updated.homeElo },
+        }),
+        prisma.team.update({
+          where: { id: fixture.awayTeamId },
+          data: { eloRating: updated.awayElo },
+        }),
+      );
+      eloUpdated += 1;
+    }
+
+    await prisma.$transaction(writes);
 
     recorded += 1;
   }
 
   return {
     recorded,
+    eloUpdated,
     skippedNotFinished,
     skippedUnknownFixture,
     skippedNoScore,
@@ -88,8 +128,9 @@ async function main() {
   console.log(`[score-results] fetching matches from ${dateFrom} to ${dateTo}`);
   const result = await scoreResults(dateFrom, dateTo);
   console.log(
-    `[score-results] done: ${result.recorded} recorded, ${result.skippedNotFinished} not finished, ` +
-      `${result.skippedUnknownFixture} unknown fixture, ${result.skippedNoScore} no score, ${result.total} total`,
+    `[score-results] done: ${result.recorded} recorded (${result.eloUpdated} elo updates), ` +
+      `${result.skippedNotFinished} not finished, ${result.skippedUnknownFixture} unknown fixture, ` +
+      `${result.skippedNoScore} no score, ${result.total} total`,
   );
 }
 

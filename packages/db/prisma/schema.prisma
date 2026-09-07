@@ -45,6 +45,12 @@ model Team {
   form               String?
   standingsUpdatedAt DateTime?
 
+  // Updated incrementally by score-results the first time each of this
+  // team's fixtures is scored (never retroactively re-applied on
+  // re-runs — see that job for the guard). All teams start at the
+  // standard 1500 baseline since we have no prior rating history.
+  eloRating Float @default(1500)
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
