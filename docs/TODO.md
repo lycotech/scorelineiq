@@ -11,7 +11,10 @@ reviewable.
       re-enabling it), root SSH login disabled in favor of a `deploy`
       sudo user, UFW active (22/80/443 only), fail2ban active with a
       tuned jail.local, unattended-upgrades already on by default.
-- [ ] Cloudflare DNS + proxy for ScorelineIQ.com
+- [x] Cloudflare DNS + proxy for ScorelineIQ.com — zone active, Namecheap
+      nameservers switched, A records for `@` and `www` point at the
+      VPS with the orange-cloud proxy on; verified both resolve to
+      Cloudflare's edge
 - [x] Install Docker + Docker Compose on VPS (v29.8.0 / Compose v5.5.1,
       `deploy` user in the `docker` group, service enabled on boot)
 - [x] Scaffold Next.js 15 + TypeScript + Tailwind repo
