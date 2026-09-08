@@ -5,9 +5,15 @@ item should become one commit/PR, not a giant batch — keeps agent work
 reviewable.
 
 ## Phase 0 — Foundations
-- [ ] Provision & harden VPS (SSH keys, UFW, fail2ban)
+- [x] Provision & harden VPS (SSH keys, UFW, fail2ban) — VPS at
+      13.140.176.236 (Ubuntu 24.04). SSH key-only auth, password login
+      disabled (including at the cloud-init level, which was silently
+      re-enabling it), root SSH login disabled in favor of a `deploy`
+      sudo user, UFW active (22/80/443 only), fail2ban active with a
+      tuned jail.local, unattended-upgrades already on by default.
 - [ ] Cloudflare DNS + proxy for ScorelineIQ.com
-- [ ] Install Docker + Docker Compose on VPS
+- [x] Install Docker + Docker Compose on VPS (v29.8.0 / Compose v5.5.1,
+      `deploy` user in the `docker` group, service enabled on boot)
 - [x] Scaffold Next.js 15 + TypeScript + Tailwind repo
 - [x] Scaffold Prisma schema: `League`, `Team`, `Fixture`, `Prediction`,
       `Result`, `AccuracyStat`
