@@ -40,6 +40,8 @@ services:
     environment:
       DATABASE_URL: postgresql://scorelineiq:${POSTGRES_PASSWORD:-changeme}@postgres:5432/scorelineiq
       PREDICTION_API_URL: http://prediction-api:8000
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+      SENTRY_DSN: ${SENTRY_DSN:-}
     depends_on:
       postgres:
         condition: service_healthy
