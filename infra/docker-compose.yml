@@ -42,6 +42,8 @@ services:
       PREDICTION_API_URL: http://prediction-api:8000
       REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
       SENTRY_DSN: ${SENTRY_DSN:-}
+      GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID:-}
+      ADSENSE_CLIENT_ID: ${ADSENSE_CLIENT_ID:-}
     depends_on:
       postgres:
         condition: service_healthy
