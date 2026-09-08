@@ -1,0 +1,25 @@
+# Auto-loaded alongside docker-compose.yml whenever `docker compose` is
+# run without explicit -f flags — i.e. local development. Exposes ports
+# on the host that the base file deliberately doesn't, so Prisma CLI/
+# psql/browser access work the same way they always have locally.
+#
+# Production deploys pass explicit -f flags (docker-compose.yml +
+# docker-compose.prod.yml), which skips this file entirely — Postgres
+# and prediction-api stay internal-only, and web is only reachable
+# through Caddy. This matters because Docker's published ports bypass
+# UFW's firewall rules entirely (Docker manages its own iptables rules
+# that take precedence), so leaving these exposed in production would
+# have put Postgres directly on the public internet regardless of the
+# firewall.
+services:
+  postgres:
+    ports:
+      - "5433:5432"
+
+  prediction-api:
+    ports:
+      - "8000:8000"
+
+  web:
+    ports:
+      - "3000:3000"

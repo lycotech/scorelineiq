@@ -1,11 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Run on the VPS after a successful CI build+push to GHCR.
-# Assumes docker-compose.yml lives in /infra relative to this script.
+# Run on the VPS to deploy the latest main. Builds images directly from
+# source rather than pulling from a registry — there's no CI/CD
+# pipeline wired up with registry-push secrets yet (see
+# .github/workflows/deploy.yml), so this is the actual deploy path for
+# now: git pull, rebuild, restart.
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.."/..
 
-docker compose pull
-docker compose up -d
+git pull origin main
+
+cd infra
+docker compose -f docker-compose.yml -f docker-compose.prod.yml build
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 docker image prune -f
+
+# Job scripts run via host-installed npm (see docker-compose.prod.yml
+# for why), so the host's own dependencies need to stay current too.
+cd ..
+npm install
+npx prisma migrate deploy --schema packages/db/prisma/schema.prisma

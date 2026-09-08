@@ -1,0 +1,52 @@
+# Production overlay. Deploy with:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Explicit -f flags mean docker-compose.override.yml (local-dev-only
+# port exposure) is not loaded alongside this.
+#
+# infra/crontab's jobs run via host-installed npm (not inside a
+# container — the web image's standalone build doesn't carry tsx or
+# devDependencies), so Postgres/prediction-api/web still need to be
+# reachable from the VPS itself. Binding to 127.0.0.1 rather than
+# leaving the port unspecified (which defaults to 0.0.0.0) keeps them
+# off the public internet: Docker's published ports bypass UFW's rules
+# entirely, so an unqualified "5432:5432" here would have put Postgres
+# on the public internet regardless of the firewall. A loopback bind
+# only accepts connections that already originate on this machine.
+services:
+  postgres:
+    restart: always
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  prediction-api:
+    restart: always
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  redis:
+    restart: always
+
+  web:
+    restart: always
+    environment:
+      SITE_URL: https://scorelineiq.com
+      WEB_APP_URL: http://localhost:3000
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+
+volumes:
+  caddy_data:
+  caddy_config:
