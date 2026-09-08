@@ -70,6 +70,30 @@ reviewable.
       needs a live domain and the user's GSC/Bing accounts
 - [x] Reserve fixed-height ad slot containers (no ads yet)
 
+## Initial production deploy (2026-09-09)
+
+Live at <https://scorelineiq.com>. `docker-compose.prod.yml` adds a Caddy
+reverse proxy (automatic Let's Encrypt HTTPS for both apex and `www`)
+and binds Postgres/prediction-api/web to `127.0.0.1` rather than the
+public interface — cron jobs still run via host-installed npm (the
+web image's standalone build has no tsx/devDependencies) so they need
+loopback access, but nothing is reachable from outside except Caddy on
+80/443. Deployed by building on the VPS directly from a git clone
+(`infra/scripts/deploy.sh`), not via `.github/workflows/deploy.yml`'s
+GHCR-pull path, which needs registry-push secrets that aren't
+configured. Real data seeded: `ingest-fixtures`, `sync-teams-and-form`,
+and `generate-predictions` all run successfully against production;
+`infra/crontab` installed for ongoing automation.
+
+Three real bugs only surfaced during this first deploy (all fixed, see
+commit history): the web image's Dockerfile never ran `prisma
+generate`, causing a Docker-build-only TypeScript failure; three pages
+(`/`, `/accuracy`, `sitemap.xml`) were statically prerendered with live
+Prisma queries that a Docker build has no database access to run —
+switched to `force-dynamic`; and `REVALIDATE_SECRET` was never actually
+passed into the web container's environment, silently breaking
+on-demand ISR (non-fatal, but not what was verified locally).
+
 ## Phase 4 — Monetization
 - [ ] Apply for Google AdSense (after ≥20–30 quality indexed pages +
       trust pages live)
