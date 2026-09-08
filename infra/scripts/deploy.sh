@@ -20,4 +20,9 @@ docker image prune -f
 # for why), so the host's own dependencies need to stay current too.
 cd ..
 npm install
+
+# Prisma CLI looks for .env next to schema.prisma (packages/db/prisma/),
+# not packages/db/.env where ours actually lives — doesn't pick it up
+# automatically, so DATABASE_URL has to be passed explicitly here.
+export $(grep -v '^#' apps/web/.env | grep DATABASE_URL)
 npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
