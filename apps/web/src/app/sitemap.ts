@@ -7,6 +7,12 @@ import { toDateParam } from "../lib/format";
 // this approaches the ~50k-URL-per-file limit search engines expect —
 // revisit once real fixture volume (per docs/IMPLEMENTATION_PLAN.md's
 // "30-40 games/day" target) makes that necessary.
+//
+// Rendered per-request rather than at build time — see
+// src/app/page.tsx for why (no live database reachable from inside the
+// Docker build).
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.SITE_URL ?? "https://scorelineiq.com";
 

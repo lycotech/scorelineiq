@@ -4,7 +4,12 @@ import { formatDateHeading, toDateParam } from "../lib/format";
 import { FixtureRow } from "../components/FixtureRow";
 import { AdSlot } from "../components/AdSlot";
 
-export const revalidate = 900; // 15 minutes
+// Rendered per-request rather than statically + ISR-revalidated: a
+// static build would need a live database reachable from inside the
+// Docker build itself, which isn't available (see apps/web/Dockerfile).
+// At current traffic this trades a small amount of caching for a
+// build that doesn't depend on build-time network conditions.
+export const dynamic = "force-dynamic";
 
 function groupByDay(fixtures: Awaited<ReturnType<typeof getUpcomingFixtures>>) {
   const groups = new Map<string, typeof fixtures>();

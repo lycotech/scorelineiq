@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import { getAccuracyOverview } from "../../lib/queries";
 import { formatPercent } from "../../lib/format";
 
-export const revalidate = 3600;
+// See src/app/page.tsx for why this is dynamic rather than static+ISR.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Prediction accuracy",
