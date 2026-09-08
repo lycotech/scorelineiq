@@ -95,13 +95,19 @@ passed into the web container's environment, silently breaking
 on-demand ISR (non-fatal, but not what was verified locally).
 
 ## Phase 4 — Monetization
-- [ ] Apply for Google AdSense (after ≥20–30 quality indexed pages +
-      trust pages live)
+- [x] Add analytics — GA4, not the originally-planned Cloudflare Web
+      Analytics/Plausible (user's explicit choice, overriding
+      TECH_STACK.md's "avoids heavy GA4 script weight" reasoning); via
+      `@next/third-parties`'s `GoogleAnalytics` component for an
+      optimized load rather than a raw script tag. Env-gated
+      (`GA_MEASUREMENT_ID`), live in production
+- [~] Apply for Google AdSense — site-verification script is live in
+      production (`ADSENSE_CLIENT_ID`, via `next/script`), but the
+      actual application/approval in the AdSense dashboard is a manual
+      step only the user can do
 - [ ] Fallback: set up Ezoic if AdSense delayed/rejected
-- [ ] Wire ad units into reserved slots
+- [ ] Wire ad units into reserved slots (once AdSense is approved)
 - [ ] Add labeled bookmaker-affiliate comparison module
-- [ ] Add privacy-friendly analytics (Cloudflare Web Analytics or
-      Plausible)
 - [ ] Re-check Core Web Vitals with ads live
 
 ## Phase 5 — Growth
