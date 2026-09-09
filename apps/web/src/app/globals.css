@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Tokens from ui/DESIGN.md ("Predictive Sports Intelligence"): a light,
+ * high-contrast analytical dashboard look. Colors below are the literal
+ * values from that spec's Colors section.
+ */
+@theme {
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-active: #1e40af;
+  --color-primary-soft: #eff6ff;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-secondary: #10b981;
+  --color-secondary-container: #ecfdf5;
+  --color-secondary-border: #a7f3d0;
+  --color-secondary-text: #047857;
+
+  --color-tertiary: #64748b;
+  --color-neutral: #0f172a;
+
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-neutral);
+}
+
+/* Tabular figures for anything numeric per DESIGN.md, to avoid layout
+   shift as predictions refresh. */
+.tnum {
+  font-feature-settings: "tnum" 1, "cv05" 1;
+  font-variant-numeric: tabular-nums;
 }

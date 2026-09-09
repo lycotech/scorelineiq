@@ -6,8 +6,8 @@ const fixtureListSelect = {
   kickoffAt: true,
   status: true,
   league: { select: { name: true, slug: true } },
-  homeTeam: { select: { name: true, slug: true } },
-  awayTeam: { select: { name: true, slug: true } },
+  homeTeam: { select: { name: true, slug: true, form: true } },
+  awayTeam: { select: { name: true, slug: true, form: true } },
   prediction: {
     select: {
       homeWinProbability: true,
@@ -16,7 +16,10 @@ const fixtureListSelect = {
       predictedScoreHome: true,
       predictedScoreAway: true,
       expectedGoals: true,
+      over25Probability: true,
+      bttsProbability: true,
       confidence: true,
+      generatedAt: true,
     },
   },
   result: { select: { homeScore: true, awayScore: true } },

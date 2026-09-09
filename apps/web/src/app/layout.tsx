@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -28,10 +23,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   const adsenseClientId = process.env.ADSENSE_CLIENT_ID;
 
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${inter.variable} h-full antialiased`}>
       {adsenseClientId && (
         <head>
           {
@@ -52,9 +44,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           />
         </head>
       )}
-      <body className="flex min-h-full flex-col bg-white text-zinc-900">
+      <body className="flex min-h-full flex-col bg-background text-neutral">
         <Header />
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6">{children}</main>
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">{children}</main>
         <Footer />
       </body>
       {gaId && <GoogleAnalytics gaId={gaId} />}

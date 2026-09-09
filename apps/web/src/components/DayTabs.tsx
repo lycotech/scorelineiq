@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { toDateParam } from "../lib/format";
-
-const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+import { formatShortDate, toDateParam } from "../lib/format";
 
 // A short window around today — matches the day-archive pages that
 // already exist at /predictions/[date], just surfaced as quick tabs
@@ -28,16 +26,16 @@ export function DayTabs({ activeDate }: { activeDate: Date }) {
         const isToday = dateParam === todayParam;
         const isActive = dateParam === activeParam;
         const href = isToday ? "/" : `/predictions/${dateParam}`;
-        const label = isToday ? "Today" : DAY_LABELS[date.getUTCDay()];
+        const label = isToday ? `Today (${formatShortDate(date)})` : formatShortDate(date);
 
         return (
           <Link
             key={dateParam}
             href={href}
-            className={`flex-shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+            className={`flex-shrink-0 rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${
               isActive
-                ? "bg-blue-600 text-white"
-                : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                ? "bg-primary text-white"
+                : "bg-background text-tertiary hover:bg-border hover:text-neutral"
             }`}
           >
             {label}

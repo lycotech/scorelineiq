@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>ScorelineIQ - Sports Predictive Analytics</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "secondary-fixed": "#6ffbbe",
+          "tertiary-fixed": "#d3e4fe",
+          "secondary-fixed-dim": "#4edea3",
+          "surface-variant": "#dae2fd",
+          "surface-tint": "#0053db",
+          "error": "#ba1a1a",
+          "tertiary-fixed-dim": "#b7c8e1",
+          "on-primary-fixed": "#00174b",
+          "on-primary-fixed-variant": "#003ea8",
+          "outline": "#737686",
+          "background": "#faf8ff",
+          "surface-container-low": "#f2f3ff",
+          "primary-fixed": "#dbe1ff",
+          "tertiary": "#46566c",
+          "primary-fixed-dim": "#b4c5ff",
+          "on-primary": "#ffffff",
+          "on-tertiary-fixed": "#0b1c30",
+          "surface": "#faf8ff",
+          "primary": "#004ac6",
+          "on-surface-variant": "#434655",
+          "error-container": "#ffdad6",
+          "surface-container-lowest": "#ffffff",
+          "on-secondary-fixed": "#002113",
+          "primary-container": "#2563eb",
+          "on-tertiary-fixed-variant": "#38485d",
+          "inverse-primary": "#b4c5ff",
+          "on-error": "#ffffff",
+          "on-background": "#131b2e",
+          "inverse-on-surface": "#eef0ff",
+          "inverse-surface": "#283044",
+          "on-primary-container": "#eeefff",
+          "on-secondary-container": "#00714d",
+          "on-tertiary": "#ffffff",
+          "on-tertiary-container": "#e9f0ff",
+          "surface-container": "#eaedff",
+          "outline-variant": "#c3c6d7",
+          "surface-dim": "#d2d9f4",
+          "surface-container-high": "#e2e7ff",
+          "on-surface": "#131b2e",
+          "secondary": "#006c49",
+          "secondary-container": "#6cf8bb",
+          "tertiary-container": "#5e6e85",
+          "surface-bright": "#faf8ff",
+          "on-secondary": "#ffffff",
+          "surface-container-highest": "#dae2fd",
+          "on-error-container": "#93000a",
+          "on-secondary-fixed-variant": "#005236"
+        },
+        borderRadius: {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        spacing: {
+          "space-base": "1rem",
+          "space-xs": "0.25rem",
+          "gutter-table": "0.75rem",
+          "space-md": "0.75rem",
+          "space-2xl": "3rem",
+          "space-xxs": "0.125rem",
+          "space-sm": "0.5rem",
+          "space-xl": "2rem",
+          "space-lg": "1.5rem",
+          "margin-container": "1.5rem"
+        },
+        fontFamily: {
+          "body-sm": ["Inter"],
+          "headline-lg": ["Inter"],
+          "label-lg": ["Inter"],
+          "headline-xl-mobile": ["Inter"],
+          "stat-display-sm": ["Inter"],
+          "headline-md": ["Inter"],
+          "data-mono": ["Inter"],
+          "body-md": ["Inter"],
+          "label-sm": ["Inter"],
+          "stat-display": ["Inter"],
+          "label-md": ["Inter"],
+          "headline-xl": ["Inter"],
+          "headline-lg-mobile": ["Inter"],
+          "body-lg": ["Inter"],
+          "data-metric": ["Inter"],
+          "label-caps": ["Inter"],
+          "badge-sm": ["Inter"]
+        },
+        fontSize: {
+          "body-sm": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+          "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+          "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "500" }],
+          "headline-md": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+          "data-metric": ["14px", { "lineHeight": "18px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+          "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+          "label-caps": ["10px", { "lineHeight": "12px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+          "badge-sm": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+          "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+          "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }]
+        }
+      }
+    }
+  };
+</script></head><body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white"><header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm"><div class="h-16 max-w-7xl mx-auto px-margin-container flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg shrink-0"><a class="flex items-center gap-space-sm" href="#"><img alt="ScorelineIQ Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UZrnyysYag_HHlQTkrY9UAQUGUX8rliY7xCVIqH3Z-gige54o3tj1ToWoar0MKxfmWQzMYi57k8QjwRR2EvzrAWfULOX0L9u_5F3SVW7oqMzTjqNFHp_WvCnd2RM7BYAJqFEpWEGCd_AAyCawM7uTTPZBM5df63jcYhaUBgxG3kBNtCGSTm12emwOxrfdkSTL5Tl_0Q8H2Owsz3EJX0CUXNd3bfyZVlgwsJlgw4Ol9_-YCDEpvcqtJJCII"/><span class="font-headline-md text-headline-md tracking-tight text-slate-900 font-semibold">Scoreline<span class="text-blue-600">IQ</span></span></a><nav class="hidden xl:flex items-center gap-space-xs" data-active-classes="text-white bg-blue-600 rounded-lg font-semibold"><a aria-current="page" class="px-space-md py-space-xs transition-colors text-white bg-blue-600 rounded-lg font-semibold text-sm shadow-sm" data-path="todays-predictions" href="#">Today's Predictions</a><a class="px-space-md py-space-xs font-body-md text-body-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors font-medium" data-path="live-probabilities" href="#">Live Probabilities</a><a class="px-space-md py-space-xs font-body-md text-body-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors font-medium" data-path="league-insights" href="#">League Insights</a><a class="px-space-md py-space-xs font-body-md text-body-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors font-medium" data-path="model-accuracy-backtests" href="#">Model Accuracy &amp; Backtests</a><a class="px-space-md py-space-xs font-body-md text-body-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors font-medium" data-path="how-it-works" href="#">How It Works</a></nav></div><div class="flex items-center gap-space-md"><div class="hidden lg:flex items-center p-space-xxs bg-slate-100 rounded-lg border border-slate-200"><button class="px-space-sm py-space-xxs rounded font-label-caps text-label-caps bg-white text-slate-900 font-bold shadow-xs" type="button">DEC</button><button class="px-space-sm py-space-xxs rounded font-label-caps text-label-caps text-slate-600 hover:text-slate-900" type="button">FRAC</button><button class="px-space-sm py-space-xxs rounded font-label-caps text-label-caps text-slate-600 hover:text-slate-900" type="button">AMER</button></div><div class="relative hidden sm:block w-48 md:w-56"><span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[18px] text-slate-400">search</span><input class="w-full h-9 pl-9 pr-space-sm bg-slate-50 border border-slate-200 rounded-lg font-body-md text-body-md text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white focus:ring-1 focus:ring-blue-600 transition-colors" placeholder="Search clubs, leagues..." type="text"/></div><a class="hidden sm:inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-lg font-badge-sm text-badge-sm bg-blue-600 text-white hover:bg-blue-700 shadow-sm transition-colors" data-path="pro-pricing" href="#"><span class="material-symbols-outlined text-[16px]">bolt</span>Get Pro Access</a><div class="flex items-center gap-space-xs"><button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span></button><button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">settings</span></button><div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center ml-space-xxs shadow-xs"><span class="material-symbols-outlined text-white text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-slate-50 min-h-screen"><div class="flex flex-col w-full">
+<!-- Content Wrapper -->
+<div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+<!-- Title & Overview Header -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 font-label-caps text-label-caps tracking-wider uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Live Predictive Engine v4.8
+          </span>
+<span class="text-slate-500 text-body-sm font-body-sm">Updated 3 mins ago</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-slate-900 tracking-tight">Today's Predictions</h1>
+<p class="font-body-lg text-body-lg text-slate-600 max-w-3xl">
+          Data-driven 1X2, correct score and expected-goals (xG) predictive models across 42 tracked global leagues.
+        </p>
+</div>
+<!-- Quick Action Stats Meta -->
+<div class="flex items-center gap-3">
+<div class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-600 text-[20px]">tune</span>
+<span class="font-body-md text-body-md text-slate-600">Model Confidence Filter:</span>
+<span class="font-data-metric text-data-metric text-slate-900 font-semibold">Monte Carlo 10k Sims</span>
+</div>
+</div>
+</div>
+<!-- KPI Summary Metric Cards Bento Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Card 1: Win Rate -->
+<div class="p-5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between relative overflow-hidden group hover:border-slate-300 hover:shadow-md transition-all">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-caps text-label-caps text-slate-500 uppercase tracking-wider">Model Win Rate (L30D)</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-xl text-headline-xl text-slate-900 font-bold">74.2%</span>
+<span class="inline-flex items-center text-emerald-600 font-badge-sm text-badge-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>+2.4%
+              </span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+<span class="material-symbols-outlined text-[22px]">auto_graph</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-slate-500">vs. 71.8% Benchmark</span>
+<!-- Mini SVG Sparkline -->
+<svg class="w-24 h-6 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 100 24">
+<path d="M0 18 Q 15 12, 30 15 T 60 7 T 85 10 T 100 2" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Card 2: Analyzed Fixtures -->
+<div class="p-5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-slate-300 hover:shadow-md transition-all">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-caps text-label-caps text-slate-500 uppercase tracking-wider">Analyzed Fixtures Today</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-xl text-headline-xl text-slate-900 font-bold">18</span>
+<span class="font-body-sm text-body-sm text-slate-500">Across 4 Leagues</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700">
+<span class="material-symbols-outlined text-[22px]">sports_soccer</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-body-sm text-body-sm text-slate-600">8 Top Tier · 10 Secondary Div</span>
+</div>
+</div>
+<!-- Card 3: Top Value Pick -->
+<div class="p-5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between relative overflow-hidden group hover:border-slate-300 hover:shadow-md transition-all">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-caps text-label-caps text-amber-700 uppercase tracking-wider font-bold">Top Value Edge</span>
+<span class="px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-800 font-label-caps text-label-caps font-semibold">+14% EV</span>
+</div>
+<div class="mt-1">
+<span class="font-headline-md text-headline-md text-slate-900 font-semibold truncate block">Derby vs West Brom</span>
+<span class="font-body-sm text-body-sm text-emerald-600 font-semibold">Away Win (2) · 55% Prob @ 2.10</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-700">
+<span class="material-symbols-outlined text-[22px]">price_check</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-slate-500">Market mispricing</span>
+<span class="text-slate-900 font-semibold">18:45 UTC</span>
+</div>
+</div>
+<!-- Card 4: Confidence Score -->
+<div class="p-5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between group hover:border-slate-300 hover:shadow-md transition-all">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-caps text-label-caps text-slate-500 uppercase tracking-wider">Avg Model Confidence</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-xl text-headline-xl text-blue-600 font-bold">68.5%</span>
+<span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-badge-sm text-badge-sm font-medium border border-blue-100">Robust</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+<span class="material-symbols-outlined text-[22px]">verified</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-body-sm font-body-sm">
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-blue-600 h-1.5 rounded-full" style="width: 68.5%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Date Horizon Selector Bar -->
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-2 rounded-xl bg-white border border-slate-200 shadow-xs">
+<div class="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+<button class="px-4 py-2 rounded-lg font-badge-sm text-badge-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0 font-medium" type="button">
+          Tue, Sep 8
+        </button>
+<!-- Active Pill -->
+<button class="px-5 py-2 rounded-lg font-badge-sm text-badge-sm bg-blue-600 text-white shadow-sm flex items-center gap-2 shrink-0 font-semibold" type="button">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          Today (Wed, 9 Sep 2026)
+        </button>
+<button class="px-4 py-2 rounded-lg font-badge-sm text-badge-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0 font-medium" type="button">
+          Thu, Sep 10
+        </button>
+<button class="px-4 py-2 rounded-lg font-badge-sm text-badge-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0 font-medium" type="button">
+          Fri, Sep 11
+        </button>
+<button class="px-4 py-2 rounded-lg font-badge-sm text-badge-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0 font-medium" type="button">
+          Sat, Sep 12
+        </button>
+<button class="px-4 py-2 rounded-lg font-badge-sm text-badge-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0 font-medium" type="button">
+          Sun, Sep 13
+        </button>
+</div>
+<!-- Secondary Calendar Jump -->
+<div class="flex items-center gap-2 shrink-0 self-end md:self-auto">
+<button class="h-9 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-body-md text-body-md flex items-center gap-1.5 transition-colors font-medium" type="button">
+<span class="material-symbols-outlined text-[18px] text-slate-500">calendar_month</span>
+<span>Full Schedule</span>
+</button>
+</div>
+</div>
+<!-- Filtering & Control Toolbar -->
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-3">
+<!-- League Filter -->
+<div class="relative">
+<select class="appearance-none bg-white border border-slate-200 text-slate-800 font-body-md text-body-md pl-3.5 pr-9 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600 cursor-pointer hover:bg-slate-50 transition-colors shadow-xs">
+<option>All Tracked Leagues (3)</option>
+<option>UEFA Champions League</option>
+<option>Eredivisie</option>
+<option>EFL Championship</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[18px]">expand_more</span>
+</div>
+<!-- Confidence Filter -->
+<div class="relative">
+<select class="appearance-none bg-white border border-slate-200 text-slate-800 font-body-md text-body-md pl-3.5 pr-9 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600 cursor-pointer hover:bg-slate-50 transition-colors shadow-xs">
+<option>All Confidence Tiers</option>
+<option>High Confidence (&gt;60%)</option>
+<option>High Expected Value Picks</option>
+<option>Over 2.5 Goals Potential</option>
+</select>
+<span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[18px]">filter_list</span>
+</div>
+</div>
+<!-- Sorting Options -->
+<div class="flex items-center gap-2">
+<span class="font-body-sm text-body-sm text-slate-500">Sort by:</span>
+<div class="flex items-center bg-white border border-slate-200 p-1 rounded-lg shadow-xs">
+<button class="px-3 py-1 rounded font-body-sm text-body-sm bg-blue-50 text-blue-700 font-semibold">Time</button>
+<button class="px-3 py-1 rounded font-body-sm text-body-sm text-slate-600 hover:text-slate-900">Win Prob</button>
+<button class="px-3 py-1 rounded font-body-sm text-body-sm text-slate-600 hover:text-slate-900">xG Total</button>
+</div>
+</div>
+</div>
+<!-- ============================================== -->
+<!-- PREDICTIONS DATA TABLE SECTION                 -->
+<!-- ============================================== -->
+<div class="rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-white">
+<!-- Table Primary Header Strip -->
+<div class="bg-blue-600 px-6 py-3.5 grid grid-cols-12 gap-4 items-center text-white font-label-caps text-label-caps tracking-wider uppercase font-bold">
+<div class="col-span-12 md:col-span-5 flex items-center gap-2">
+<span>MATCH / FIXTURE</span>
+</div>
+<div class="col-span-3 md:col-span-3 hidden md:flex items-center justify-between px-4">
+<span class="text-center w-12 text-blue-100">1 (HOME)</span>
+<span class="text-center w-12 text-blue-100">X (DRAW)</span>
+<span class="text-center w-12 text-blue-100">2 (AWAY)</span>
+</div>
+<div class="col-span-4 md:col-span-2 text-center text-blue-100">PREDICTION</div>
+<div class="col-span-4 md:col-span-1 text-center text-blue-100">SCORE</div>
+<div class="col-span-4 md:col-span-1 text-right text-blue-100">AVG GOALS</div>
+</div>
+<!-- ================= LEAGUE GROUP 1: EREDIVISIE ================= -->
+<div class="bg-slate-100/80 border-b border-slate-200 px-6 py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-slate-700 font-bold text-[10px]">
+            NL
+          </div>
+<span class="font-headline-md text-headline-md text-slate-900 font-bold">Eredivisie</span>
+<span class="font-body-sm text-body-sm text-slate-500">· Round 5</span>
+</div>
+<span class="font-body-sm text-body-sm text-slate-500 font-medium">1 Match Today</span>
+</div>
+<!-- Match Row: FC Twente vs Telstar -->
+<div class="px-6 py-4.5 bg-white hover:bg-slate-50 transition-all border-b border-slate-100 group">
+<div class="grid grid-cols-12 gap-4 items-center">
+<!-- Match Info -->
+<div class="col-span-12 md:col-span-5 flex flex-col justify-center space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-body-sm text-body-sm font-medium">16:45 UTC</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-700 font-label-caps text-label-caps font-semibold">
+<span class="w-1 h-1 rounded-full bg-emerald-500"></span> High Value
+              </span>
+</div>
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-body-sm">T</div>
+<span class="font-body-lg text-body-lg font-bold text-slate-900">FC Twente '65</span>
+</div>
+<span class="font-data-metric text-data-metric text-blue-600 md:hidden font-bold">79%</span>
+</div>
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-body-sm">TEL</div>
+<span class="font-body-lg text-body-lg text-slate-600">Telstar 1963</span>
+</div>
+<span class="font-data-metric text-data-metric text-slate-500 md:hidden font-medium">12%</span>
+</div>
+</div>
+<!-- Mobile Probability Micro-bar -->
+<div class="md:hidden pt-2">
+<div class="w-full h-1.5 rounded-full flex overflow-hidden bg-slate-100">
+<div class="bg-blue-600" style="width: 79%"></div>
+<div class="bg-slate-300" style="width: 9%"></div>
+<div class="bg-slate-400" style="width: 12%"></div>
+</div>
+</div>
+</div>
+<!-- Desktop Probabilities (1 / X / 2) with visual bar -->
+<div class="col-span-3 hidden md:flex flex-col gap-1.5 px-4">
+<div class="flex items-center justify-between font-data-metric text-data-metric">
+<span class="text-emerald-700 font-bold">79%</span>
+<span class="text-slate-500">9%</span>
+<span class="text-slate-500">12%</span>
+</div>
+<!-- Segmented Probability Bar -->
+<div class="w-full h-2 rounded-full flex overflow-hidden bg-slate-100">
+<div class="bg-emerald-500" style="width: 79%" title="Home: 79%"></div>
+<div class="bg-slate-300" style="width: 9%" title="Draw: 9%"></div>
+<div class="bg-slate-400" style="width: 12%" title="Away: 12%"></div>
+</div>
+</div>
+<!-- Prediction Badge -->
+<div class="col-span-4 md:col-span-2 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-headline-md text-headline-md font-bold shadow-xs">
+                1
+              </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="font-badge-sm text-badge-sm text-slate-900 font-bold">Home Win</span>
+<span class="font-body-sm text-body-sm text-emerald-600 font-semibold">High Conf 79%</span>
+</div>
+</div>
+</div>
+<!-- Predicted Scoreline -->
+<div class="col-span-4 md:col-span-1 flex flex-col items-center justify-center">
+<div class="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 font-data-metric text-data-metric text-slate-900 tracking-wider font-bold">
+              3 - 0
+            </div>
+</div>
+<!-- Expected Goals -->
+<div class="col-span-4 md:col-span-1 flex flex-col items-end justify-center">
+<span class="font-data-metric text-data-metric text-slate-900 font-bold">4.27</span>
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-label-caps text-label-caps mt-0.5 font-bold">Over 2.5</span>
+</div>
+</div>
+<!-- Inline Quick Expand Drawer Trigger -->
+<div class="mt-3 pt-2.5 flex items-center justify-between text-body-sm font-body-sm text-slate-500 border-t border-slate-100">
+<div class="flex items-center gap-4">
+<span>Form: <strong class="text-emerald-600">W W W D W</strong></span>
+<span class="hidden sm:inline">·</span>
+<span class="hidden sm:inline">xG Model Spread: <strong class="text-slate-800">3.12 vs 0.65</strong></span>
+</div>
+<button class="text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors font-badge-sm text-badge-sm font-semibold" type="button">
+<span>Model Analysis</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- ================= LEAGUE GROUP 2: UEFA CHAMPIONS LEAGUE ================= -->
+<div class="bg-slate-100/80 border-b border-slate-200 px-6 py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[10px]">
+            ★
+          </div>
+<span class="font-headline-md text-headline-md text-slate-900 font-bold">UEFA Champions League</span>
+<span class="font-body-sm text-body-sm text-slate-500">· Group Stage Matchday 1</span>
+</div>
+<span class="font-body-sm text-body-sm text-slate-500 font-medium">4 Matches Today</span>
+</div>
+<!-- Match: FC Barcelona vs Feyenoord -->
+<div class="px-6 py-4.5 bg-white hover:bg-slate-50 transition-all border-b border-slate-100 group">
+<div class="grid grid-cols-12 gap-4 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col justify-center space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-body-sm text-body-sm font-medium">16:45 UTC</span>
+<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-label-caps text-label-caps font-semibold">
+                Algorithm Locked
+              </span>
+</div>
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-body-sm">BAR</div>
+<span class="font-body-lg text-body-lg font-bold text-slate-900">FC Barcelona</span>
+</div>
+<span class="font-data-metric text-data-metric text-emerald-700 md:hidden font-bold">68%</span>
+</div>
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-body-sm">FEY</div>
+<span class="font-body-lg text-body-lg text-slate-600">Feyenoord Rotterdam</span>
+</div>
+<span class="font-data-metric text-data-metric text-slate-500 md:hidden">14%</span>
+</div>
+</div>
+</div>
+<div class="col-span-3 hidden md:flex flex-col gap-1.5 px-4">
+<div class="flex items-center justify-between font-data-metric text-data-metric">
+<span class="text-emerald-700 font-bold">68%</span>
+<span class="text-slate-500">18%</span>
+<span class="text-slate-500">14%</span>
+</div>
+<div class="w-full h-2 rounded-full flex overflow-hidden bg-slate-100">
+<div class="bg-emerald-500" style="width: 68%"></div>
+<div class="bg-slate-300" style="width: 18%"></div>
+<div class="bg-slate-400" style="width: 14%"></div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-2 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-headline-md text-headline-md font-bold shadow-xs">
+                1
+              </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="font-badge-sm text-badge-sm text-slate-900 font-bold">Barcelona Win</span>
+<span class="font-body-sm text-body-sm text-slate-500">Confidence 68%</span>
+</div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-center justify-center">
+<div class="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 font-data-metric text-data-metric text-slate-900 tracking-wider font-bold">
+              2 - 1
+            </div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-end justify-center">
+<span class="font-data-metric text-data-metric text-slate-900 font-bold">3.15</span>
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-label-caps text-label-caps mt-0.5 font-bold">Over 2.5</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 flex items-center justify-between text-body-sm font-body-sm text-slate-500 border-t border-slate-100">
+<div class="flex items-center gap-4">
+<span>Form: <strong class="text-emerald-600">W W W W D</strong> vs <strong class="text-slate-600">W D L W W</strong></span>
+</div>
+<button class="text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors font-badge-sm text-badge-sm font-semibold" type="button">
+<span>Model Analysis</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Match: VfB Stuttgart vs Viking FK -->
+<div class="px-6 py-4.5 bg-white hover:bg-slate-50 transition-all border-b border-slate-100 group">
+<div class="grid grid-cols-12 gap-4 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col justify-center space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-body-sm text-body-sm font-medium">16:45 UTC</span>
+</div>
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-body-sm">VFB</div>
+<span class="font-body-lg text-body-lg font-bold text-slate-900">VfB Stuttgart</span>
+</div>
+<span class="font-data-metric text-data-metric text-emerald-700 md:hidden font-bold">72%</span>
+</div>
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-body-sm">VIK</div>
+<span class="font-body-lg text-body-lg text-slate-600">Viking FK</span>
+</div>
+<span class="font-data-metric text-data-metric text-slate-500 md:hidden">12%</span>
+</div>
+</div>
+</div>
+<div class="col-span-3 hidden md:flex flex-col gap-1.5 px-4">
+<div class="flex items-center justify-between font-data-metric text-data-metric">
+<span class="text-emerald-700 font-bold">72%</span>
+<span class="text-slate-500">16%</span>
+<span class="text-slate-500">12%</span>
+</div>
+<div class="w-full h-2 rounded-full flex overflow-hidden bg-slate-100">
+<div class="bg-emerald-500" style="width: 72%"></div>
+<div class="bg-slate-300" style="width: 16%"></div>
+<div class="bg-slate-400" style="width: 12%"></div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-2 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-headline-md text-headline-md font-bold shadow-xs">
+                1
+              </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="font-badge-sm text-badge-sm text-slate-900 font-bold">Stuttgart Win</span>
+<span class="font-body-sm text-body-sm text-emerald-600 font-semibold">High Conf 72%</span>
+</div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-center justify-center">
+<div class="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 font-data-metric text-data-metric text-slate-900 tracking-wider font-bold">
+              3 - 1
+            </div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-end justify-center">
+<span class="font-data-metric text-data-metric text-slate-900 font-bold">3.40</span>
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-label-caps text-label-caps mt-0.5 font-bold">Over 2.5</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 flex items-center justify-between text-body-sm font-body-sm text-slate-500 border-t border-slate-100">
+<div class="flex items-center gap-4">
+<span>Form: <strong class="text-emerald-600">W D W W L</strong></span>
+</div>
+<button class="text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors font-badge-sm text-badge-sm font-semibold" type="button">
+<span>Model Analysis</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Match: Paris Saint-Germain FC vs ŠK Slovan Bratislava -->
+<div class="px-6 py-4.5 bg-white hover:bg-slate-50 transition-all border-b border-slate-100 group">
+<div class="grid grid-cols-12 gap-4 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col justify-center space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-body-sm text-body-sm font-medium">19:00 UTC</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 font-label-caps text-label-caps font-semibold">
+                Prime Pick
+              </span>
+</div>
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-body-sm">PSG</div>
+<span class="font-body-lg text-body-lg font-bold text-slate-900">Paris Saint-Germain FC</span>
+</div>
+<span class="font-data-metric text-data-metric text-emerald-700 md:hidden font-bold">84%</span>
+</div>
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-body-sm">SLO</div>
+<span class="font-body-lg text-body-lg text-slate-600">ŠK Slovan Bratislava</span>
+</div>
+<span class="font-data-metric text-data-metric text-slate-500 md:hidden">6%</span>
+</div>
+</div>
+</div>
+<div class="col-span-3 hidden md:flex flex-col gap-1.5 px-4">
+<div class="flex items-center justify-between font-data-metric text-data-metric">
+<span class="text-emerald-700 font-bold">84%</span>
+<span class="text-slate-500">10%</span>
+<span class="text-slate-500">6%</span>
+</div>
+<div class="w-full h-2 rounded-full flex overflow-hidden bg-slate-100">
+<div class="bg-emerald-500" style="width: 84%"></div>
+<div class="bg-slate-300" style="width: 10%"></div>
+<div class="bg-slate-400" style="width: 6%"></div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-2 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-headline-md text-headline-md font-bold shadow-xs">
+                1
+              </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="font-badge-sm text-badge-sm text-slate-900 font-bold">PSG Win</span>
+<span class="font-body-sm text-body-sm text-emerald-600 font-semibold">Highest Conf 84%</span>
+</div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-center justify-center">
+<div class="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 font-data-metric text-data-metric text-slate-900 tracking-wider font-bold">
+              4 - 0
+            </div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-end justify-center">
+<span class="font-data-metric text-data-metric text-slate-900 font-bold">3.85</span>
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-label-caps text-label-caps mt-0.5 font-bold">Over 2.5</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 flex items-center justify-between text-body-sm font-body-sm text-slate-500 border-t border-slate-100">
+<div class="flex items-center gap-4">
+<span>Clean Sheet Probability: <strong class="text-emerald-600">64%</strong></span>
+</div>
+<button class="text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors font-badge-sm text-badge-sm font-semibold" type="button">
+<span>Model Analysis</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Match: SSC Napoli vs Arsenal FC -->
+<div class="px-6 py-4.5 bg-white hover:bg-slate-50 transition-all border-b border-slate-100 group">
+<div class="grid grid-cols-12 gap-4 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col justify-center space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-body-sm text-body-sm font-medium">19:00 UTC</span>
+<span class="px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-label-caps text-label-caps font-semibold">
+                Tight Matchup
+              </span>
+</div>
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-body-sm">NAP</div>
+<span class="font-body-lg text-body-lg font-bold text-slate-900">SSC Napoli</span>
+</div>
+<span class="font-data-metric text-data-metric text-slate-600 md:hidden">34%</span>
+</div>
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-body-sm">ARS</div>
+<span class="font-body-lg text-body-lg font-bold text-slate-900">Arsenal FC</span>
+</div>
+<span class="font-data-metric text-data-metric text-slate-600 md:hidden">35%</span>
+</div>
+</div>
+</div>
+<div class="col-span-3 hidden md:flex flex-col gap-1.5 px-4">
+<div class="flex items-center justify-between font-data-metric text-data-metric">
+<span class="text-slate-800 font-medium">34%</span>
+<span class="text-amber-700 font-bold">31%</span>
+<span class="text-slate-800 font-medium">35%</span>
+</div>
+<div class="w-full h-2 rounded-full flex overflow-hidden bg-slate-100">
+<div class="bg-blue-500" style="width: 34%"></div>
+<div class="bg-amber-400" style="width: 31%"></div>
+<div class="bg-slate-400" style="width: 35%"></div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-2 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center font-headline-md text-headline-md font-bold shadow-xs">
+                X
+              </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="font-badge-sm text-badge-sm text-slate-900 font-bold">Draw / Under</span>
+<span class="font-body-sm text-body-sm text-amber-700 font-semibold">Evenly Split</span>
+</div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-center justify-center">
+<div class="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 font-data-metric text-data-metric text-slate-900 tracking-wider font-bold">
+              1 - 1
+            </div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-end justify-center">
+<span class="font-data-metric text-data-metric text-slate-900 font-bold">2.10</span>
+<span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 font-label-caps text-label-caps mt-0.5 font-bold">Under 2.5</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 flex items-center justify-between text-body-sm font-body-sm text-slate-500 border-t border-slate-100">
+<div class="flex items-center gap-4">
+<span>Both Teams to Score: <strong class="text-emerald-600">Yes (58%)</strong></span>
+</div>
+<button class="text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors font-badge-sm text-badge-sm font-semibold" type="button">
+<span>Model Analysis</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- ================= LEAGUE GROUP 3: EFL CHAMPIONSHIP ================= -->
+<div class="bg-slate-100/80 border-b border-slate-200 px-6 py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
+            EFL
+          </div>
+<span class="font-headline-md text-headline-md text-slate-900 font-bold">EFL Championship</span>
+<span class="font-body-sm text-body-sm text-slate-500">· Matchday 7</span>
+</div>
+<span class="font-body-sm text-body-sm text-slate-500 font-medium">3 Matches Today</span>
+</div>
+<!-- Match: Derby County vs West Bromwich Albion -->
+<div class="px-6 py-4.5 bg-white hover:bg-slate-50 transition-all border-b border-slate-100 group">
+<div class="grid grid-cols-12 gap-4 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col justify-center space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-body-sm text-body-sm font-medium">18:45 UTC</span>
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 font-label-caps text-label-caps font-semibold">
+                Top Value Pick
+              </span>
+</div>
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-body-sm">DER</div>
+<span class="font-body-lg text-body-lg text-slate-600">Derby County FC</span>
+</div>
+<span class="font-data-metric text-data-metric text-slate-500 md:hidden">24%</span>
+</div>
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-body-sm">WBA</div>
+<span class="font-body-lg text-body-lg font-bold text-slate-900">West Bromwich Albion FC</span>
+</div>
+<span class="font-data-metric text-data-metric text-emerald-700 md:hidden font-bold">55%</span>
+</div>
+</div>
+</div>
+<div class="col-span-3 hidden md:flex flex-col gap-1.5 px-4">
+<div class="flex items-center justify-between font-data-metric text-data-metric">
+<span class="text-slate-500">24%</span>
+<span class="text-slate-500">21%</span>
+<span class="text-emerald-700 font-bold">55%</span>
+</div>
+<div class="w-full h-2 rounded-full flex overflow-hidden bg-slate-100">
+<div class="bg-slate-300" style="width: 24%"></div>
+<div class="bg-slate-400" style="width: 21%"></div>
+<div class="bg-emerald-500" style="width: 55%"></div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-2 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-headline-md text-headline-md font-bold shadow-xs">
+                2
+              </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="font-badge-sm text-badge-sm text-slate-900 font-bold">Away Win</span>
+<span class="font-body-sm text-body-sm text-emerald-600 font-semibold">55% @ 2.10 Edge</span>
+</div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-center justify-center">
+<div class="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 font-data-metric text-data-metric text-slate-900 tracking-wider font-bold">
+              1 - 2
+            </div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-end justify-center">
+<span class="font-data-metric text-data-metric text-slate-900 font-bold">3.59</span>
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-label-caps text-label-caps mt-0.5 font-bold">Over 2.5</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 flex items-center justify-between text-body-sm font-body-sm text-slate-500 border-t border-slate-100">
+<div class="flex items-center gap-4">
+<span>Model EV: <strong class="text-emerald-600">+14.2%</strong> vs Pinnacle Closing Line</span>
+</div>
+<button class="text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors font-badge-sm text-badge-sm font-semibold" type="button">
+<span>Model Analysis</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Match: Norwich City vs Birmingham City -->
+<div class="px-6 py-4.5 bg-white hover:bg-slate-50 transition-all border-b border-slate-100 group">
+<div class="grid grid-cols-12 gap-4 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col justify-center space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-body-sm text-body-sm font-medium">18:45 UTC</span>
+</div>
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-body-sm">NOR</div>
+<span class="font-body-lg text-body-lg font-bold text-slate-900">Norwich City FC</span>
+</div>
+<span class="font-data-metric text-data-metric text-blue-600 md:hidden font-semibold">44%</span>
+</div>
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-body-sm">BIR</div>
+<span class="font-body-lg text-body-lg text-slate-600">Birmingham City FC</span>
+</div>
+<span class="font-data-metric text-data-metric text-slate-500 md:hidden">32%</span>
+</div>
+</div>
+</div>
+<div class="col-span-3 hidden md:flex flex-col gap-1.5 px-4">
+<div class="flex items-center justify-between font-data-metric text-data-metric">
+<span class="text-blue-700 font-bold">44%</span>
+<span class="text-slate-500">24%</span>
+<span class="text-slate-500">32%</span>
+</div>
+<div class="w-full h-2 rounded-full flex overflow-hidden bg-slate-100">
+<div class="bg-blue-600" style="width: 44%"></div>
+<div class="bg-slate-300" style="width: 24%"></div>
+<div class="bg-slate-400" style="width: 32%"></div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-2 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-headline-md text-headline-md font-bold shadow-xs">
+                1
+              </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="font-badge-sm text-badge-sm text-slate-900 font-bold">Home Lean</span>
+<span class="font-body-sm text-body-sm text-slate-500">Moderate 44%</span>
+</div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-center justify-center">
+<div class="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 font-data-metric text-data-metric text-slate-900 tracking-wider font-bold">
+              1 - 1
+            </div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-end justify-center">
+<span class="font-data-metric text-data-metric text-slate-900 font-bold">3.59</span>
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-label-caps text-label-caps mt-0.5 font-bold">Over 2.5</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 flex items-center justify-between text-body-sm font-body-sm text-slate-500 border-t border-slate-100">
+<div class="flex items-center gap-4">
+<span>Variance Index: <strong class="text-slate-800">Medium</strong></span>
+</div>
+<button class="text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors font-badge-sm text-badge-sm font-semibold" type="button">
+<span>Model Analysis</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Match: Charlton Athletic vs Queens Park Rangers -->
+<div class="px-6 py-4.5 bg-white hover:bg-slate-50 transition-all group">
+<div class="grid grid-cols-12 gap-4 items-center">
+<div class="col-span-12 md:col-span-5 flex flex-col justify-center space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-body-sm text-body-sm font-medium">19:00 UTC</span>
+</div>
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-body-sm">CHA</div>
+<span class="font-body-lg text-body-lg text-slate-600">Charlton Athletic FC</span>
+</div>
+<span class="font-data-metric text-data-metric text-slate-500 md:hidden">28%</span>
+</div>
+<div class="flex items-center justify-between md:justify-start gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-body-sm">QPR</div>
+<span class="font-body-lg text-body-lg font-bold text-slate-900">Queens Park Rangers FC</span>
+</div>
+<span class="font-data-metric text-data-metric text-blue-600 md:hidden font-semibold">42%</span>
+</div>
+</div>
+</div>
+<div class="col-span-3 hidden md:flex flex-col gap-1.5 px-4">
+<div class="flex items-center justify-between font-data-metric text-data-metric">
+<span class="text-slate-500">28%</span>
+<span class="text-slate-500">30%</span>
+<span class="text-blue-700 font-bold">42%</span>
+</div>
+<div class="w-full h-2 rounded-full flex overflow-hidden bg-slate-100">
+<div class="bg-slate-300" style="width: 28%"></div>
+<div class="bg-slate-400" style="width: 30%"></div>
+<div class="bg-blue-600" style="width: 42%"></div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-2 flex flex-col items-center justify-center gap-1">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-headline-md text-headline-md font-bold shadow-xs">
+                2
+              </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="font-badge-sm text-badge-sm text-slate-900 font-bold">QPR Win Lean</span>
+<span class="font-body-sm text-body-sm text-slate-500">Confidence 42%</span>
+</div>
+</div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-center justify-center">
+<div class="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 font-data-metric text-data-metric text-slate-900 tracking-wider font-bold">
+              1 - 1
+            </div>
+</div>
+<div class="col-span-4 md:col-span-1 flex flex-col items-end justify-center">
+<span class="font-data-metric text-data-metric text-slate-900 font-bold">2.42</span>
+<span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 font-label-caps text-label-caps mt-0.5 font-bold">Under 2.5</span>
+</div>
+</div>
+<div class="mt-3 pt-2.5 flex items-center justify-between text-body-sm font-body-sm text-slate-500 border-t border-slate-100">
+<div class="flex items-center gap-4">
+<span>xG Differential: <strong class="text-slate-800">+0.38 in favor of Away</strong></span>
+</div>
+<button class="text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors font-badge-sm text-badge-sm font-semibold" type="button">
+<span>Model Analysis</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Editorial Analytics Insights Callout -->
+<div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+<span class="material-symbols-outlined text-[28px]">query_stats</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-headline-md text-headline-md text-slate-900 font-bold">How ScorelineIQ Calculates Probabilities</h3>
+<p class="font-body-md text-body-md text-slate-600 max-w-2xl">
+            Our predictive architecture pairs dynamic Poisson distributions with team-specific possession value metrics, rolling xG regressions, and live lineup injuries to simulate every match 10,000 times before kickoff.
+          </p>
+</div>
+</div>
+<a class="px-4 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 font-badge-sm text-badge-sm flex items-center gap-2 transition-colors shrink-0 font-semibold" href="#">
+<span>Inspect Backtest Data</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div></main><footer class="w-full bg-white border-t border-slate-200 py-space-xl mt-space-2xl"><div class="max-w-7xl mx-auto px-margin-container flex flex-col md:flex-row items-center justify-between gap-space-lg"><div class="flex items-center gap-space-sm"><a class="flex items-center gap-space-sm" href="#"><img alt="ScorelineIQ Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UZrnyysYag_HHlQTkrY9UAQUGUX8rliY7xCVIqH3Z-gige54o3tj1ToWoar0MKxfmWQzMYi57k8QjwRR2EvzrAWfULOX0L9u_5F3SVW7oqMzTjqNFHp_WvCnd2RM7BYAJqFEpWEGCd_AAyCawM7uTTPZBM5df63jcYhaUBgxG3kBNtCGSTm12emwOxrfdkSTL5Tl_0Q8H2Owsz3EJX0CUXNd3bfyZVlgwsJlgw4Ol9_-YCDEpvcqtJJCII"/><span class="font-headline-md text-headline-md text-slate-900 font-bold">Scoreline<span class="text-blue-600">IQ</span></span></a><span class="font-body-sm text-body-sm text-slate-400 ml-space-xs">Predictive Engine v4.8</span></div><div class="flex items-center gap-space-lg text-slate-600 font-body-md text-body-md font-medium"><a class="hover:text-slate-900 transition-colors" href="#">Predictive Methodology</a><a class="hover:text-slate-900 transition-colors" href="#">API Feeds</a><a class="hover:text-slate-900 transition-colors" href="#">Terms of Service</a><a class="hover:text-slate-900 transition-colors" href="#">Responsible Analytics</a></div><div class="font-body-sm text-body-sm text-slate-400">© 2025 ScorelineIQ Labs Ltd. Real-time probabilities for tactical intelligence.</div></div></footer></body></html>
