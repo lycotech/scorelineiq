@@ -45,6 +45,7 @@ services:
       GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID:-}
       ADSENSE_CLIENT_ID: ${ADSENSE_CLIENT_ID:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      RAPIDAPI_FOOTBALL_STATS_KEY: ${RAPIDAPI_FOOTBALL_STATS_KEY:-}
     depends_on:
       postgres:
         condition: service_healthy

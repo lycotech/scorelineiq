@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { getFixturesForDate, getAllLeaguesWithUpcomingCounts, getAccuracyOverview } from "../lib/queries";
 import { formatRelativeTime } from "../lib/format";
 import { DayTabs } from "../components/DayTabs";
 import { FixtureTable, predictedOutcome, outcomeLabel } from "../components/FixtureTable";
 import { StatsBar, type StatsBarData } from "../components/StatsBar";
+import { LiveScores } from "../components/LiveScores";
 import { AdSlot } from "../components/AdSlot";
 
 // Rendered per-request rather than statically + ISR-revalidated: a
@@ -88,6 +90,10 @@ export default async function Home() {
       </div>
 
       <StatsBar data={statsBarData} />
+
+      <Suspense fallback={null}>
+        <LiveScores />
+      </Suspense>
 
       <DayTabs activeDate={today} />
 
