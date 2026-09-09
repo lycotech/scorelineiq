@@ -86,7 +86,13 @@ async function ingestFixtures(dateFrom: string, dateTo: string) {
 async function main() {
   const now = new Date();
   const dateFrom = formatDate(now);
-  const dateTo = formatDate(new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000));
+  // Football-Data.org's free tier accepts date ranges at least this
+  // wide (tested: a 9-day window returns 200 OK). A narrower window
+  // was silently hiding entire leagues whose next fixture happened to
+  // fall outside it — Premier League, Bundesliga and Ligue 1 all had
+  // zero rows in the database under the old +2-day window despite
+  // being fully available from the API.
+  const dateTo = formatDate(new Date(now.getTime() + 9 * 24 * 60 * 60 * 1000));
 
   console.log(`[ingest-fixtures] fetching matches from ${dateFrom} to ${dateTo}`);
   const result = await ingestFixtures(dateFrom, dateTo);
