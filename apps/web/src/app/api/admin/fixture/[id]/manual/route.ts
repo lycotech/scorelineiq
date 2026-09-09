@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveManualPrediction } from "../../../../../../lib/predict";
+import { getPublicOrigin } from "../../../../../../lib/request-origin";
 
 function num(formData: FormData, key: string): number {
   const value = Number(formData.get(key));
@@ -9,7 +10,7 @@ function num(formData: FormData, key: string): number {
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const redirectUrl = new URL(`/admin/fixture/${id}`, request.url);
+  const redirectUrl = new URL(`/admin/fixture/${id}`, getPublicOrigin(request));
 
   try {
     const formData = await request.formData();

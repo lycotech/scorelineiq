@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generatePredictionForFixture } from "../../../../../../lib/predict";
+import { getPublicOrigin } from "../../../../../../lib/request-origin";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const redirectUrl = new URL(`/admin/fixture/${id}`, request.url);
+  const redirectUrl = new URL(`/admin/fixture/${id}`, getPublicOrigin(request));
 
   try {
     const result = await generatePredictionForFixture(id);
