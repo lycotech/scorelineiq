@@ -186,6 +186,71 @@ export async function getAccuracyOverview() {
   };
 }
 
+export async function getAdminFixtures() {
+  const now = new Date();
+  const start = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+  const end = new Date(now.getTime() + 9 * 24 * 60 * 60 * 1000);
+
+  return prisma.fixture.findMany({
+    where: { kickoffAt: { gte: start, lt: end } },
+    select: {
+      id: true,
+      slug: true,
+      kickoffAt: true,
+      status: true,
+      league: { select: { name: true } },
+      homeTeam: { select: { name: true } },
+      awayTeam: { select: { name: true } },
+      prediction: { select: { modelVersion: true, confidence: true, generatedAt: true } },
+      result: { select: { homeScore: true, awayScore: true } },
+    },
+    orderBy: { kickoffAt: "asc" },
+  });
+}
+
+export async function getAdminFixtureDetail(id: string) {
+  return prisma.fixture.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      slug: true,
+      kickoffAt: true,
+      status: true,
+      league: { select: { name: true, slug: true } },
+      homeTeam: {
+        select: {
+          id: true,
+          name: true,
+          played: true,
+          won: true,
+          draw: true,
+          lost: true,
+          goalsFor: true,
+          goalsAgainst: true,
+          eloRating: true,
+          form: true,
+        },
+      },
+      awayTeam: {
+        select: {
+          id: true,
+          name: true,
+          played: true,
+          won: true,
+          draw: true,
+          lost: true,
+          goalsFor: true,
+          goalsAgainst: true,
+          eloRating: true,
+          form: true,
+        },
+      },
+      prediction: true,
+      result: { select: { homeScore: true, awayScore: true } },
+    },
+  });
+}
+
 export async function getAllFixtureSlugsForSitemap() {
   return prisma.fixture.findMany({ select: { slug: true, updatedAt: true, kickoffAt: true } });
 }

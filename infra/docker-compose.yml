@@ -44,6 +44,7 @@ services:
       SENTRY_DSN: ${SENTRY_DSN:-}
       GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID:-}
       ADSENSE_CLIENT_ID: ${ADSENSE_CLIENT_ID:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
     depends_on:
       postgres:
         condition: service_healthy
