@@ -26,3 +26,10 @@ npm install
 # automatically, so DATABASE_URL has to be passed explicitly here.
 export $(grep -v '^#' apps/web/.env | grep DATABASE_URL)
 npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
+
+# migrate deploy does NOT regenerate the client — without this, job
+# scripts keep using whatever shape the client had at the last `npm
+# install`/generate, silently rejecting any new column a migration
+# just added (hit this: a job started failing on a field that
+# definitely existed in the DB right after a migration).
+npx prisma generate --schema packages/db/prisma/schema.prisma
