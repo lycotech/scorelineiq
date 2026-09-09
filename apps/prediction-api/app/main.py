@@ -46,6 +46,7 @@ def predict(request: PredictRequest) -> PredictResponse:
         top_correct_scores=[CorrectScore(**s) for s in top_scores],
         over_2_5_probability=poisson.over_under_probability(matrix, line=2.5),
         btts_probability=poisson.btts_probability(matrix),
+        expected_total_goals=round(lam + mu, 2),
         confidence=round(max(home_win, draw, away_win) * 100, 1),
         model_version=MODEL_VERSION,
     )

@@ -10,6 +10,7 @@ interface PredictResponse {
   predicted_score_away: number;
   over_2_5_probability: number;
   btts_probability: number;
+  expected_total_goals: number;
   confidence: number;
   model_version: string;
 }
@@ -133,6 +134,7 @@ async function generatePredictions() {
           predictedScoreAway: prediction.predicted_score_away,
           over25Probability: prediction.over_2_5_probability,
           bttsProbability: prediction.btts_probability,
+          expectedGoals: prediction.expected_total_goals,
           confidence: prediction.confidence,
           modelVersion: prediction.model_version,
         },
@@ -144,6 +146,7 @@ async function generatePredictions() {
           predictedScoreAway: prediction.predicted_score_away,
           over25Probability: prediction.over_2_5_probability,
           bttsProbability: prediction.btts_probability,
+          expectedGoals: prediction.expected_total_goals,
           confidence: prediction.confidence,
           modelVersion: prediction.model_version,
           generatedAt: new Date(),

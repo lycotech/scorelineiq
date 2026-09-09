@@ -52,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           />
         </head>
       )}
-      <body className="flex min-h-full flex-col bg-white text-zinc-900 dark:bg-black dark:text-zinc-50">
+      <body className="flex min-h-full flex-col bg-white text-zinc-900 dark:bg-slate-950 dark:text-zinc-50">
         <Header />
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6">{children}</main>
         <Footer />

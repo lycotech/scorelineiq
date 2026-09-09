@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getLeagueBySlug } from "../../../lib/queries";
 import { formatPercent } from "../../../lib/format";
-import { FixtureRow } from "../../../components/FixtureRow";
+import { FixtureTable } from "../../../components/FixtureTable";
 import { AdSlot } from "../../../components/AdSlot";
 
 export const revalidate = 3600;
@@ -81,14 +81,14 @@ export default async function LeagueHubPage({ params }: PageProps) {
 
       {accuracy.length > 0 && (
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">
             Prediction accuracy
           </h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {accuracy.map((stat) => (
-              <div key={stat.market} className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+              <div key={stat.market} className="rounded-lg border border-blue-100 p-3 dark:border-slate-800">
                 <div className="text-xs text-zinc-500">{MARKET_LABELS[stat.market] ?? stat.market}</div>
-                <div className="mt-1 text-xl font-semibold">{formatPercent(stat.hitRate)}</div>
+                <div className="mt-1 text-xl font-semibold text-blue-700 dark:text-blue-400">{formatPercent(stat.hitRate)}</div>
                 <div className="text-xs text-zinc-400">{stat.hitCount}/{stat.totalCount}</div>
               </div>
             ))}
@@ -98,32 +98,32 @@ export default async function LeagueHubPage({ params }: PageProps) {
 
       {teams.length > 0 && (
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Standings</h2>
-          <div className="overflow-x-auto">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">Standings</h2>
+          <div className="overflow-x-auto rounded-lg border border-blue-100 dark:border-slate-800">
             <table className="w-full min-w-[480px] text-sm">
               <thead>
-                <tr className="border-b border-zinc-200 text-left text-xs uppercase text-zinc-500 dark:border-zinc-800">
-                  <th className="py-2 pr-2">Team</th>
+                <tr className="bg-blue-600 text-left text-xs font-semibold uppercase text-white">
+                  <th className="py-2 pl-4 pr-2">Team</th>
                   <th className="px-2 text-right">P</th>
                   <th className="px-2 text-right">W</th>
                   <th className="px-2 text-right">D</th>
                   <th className="px-2 text-right">L</th>
                   <th className="px-2 text-right">GF</th>
                   <th className="px-2 text-right">GA</th>
-                  <th className="pl-2 text-right">Pts</th>
+                  <th className="py-2 pl-2 pr-4 text-right">Pts</th>
                 </tr>
               </thead>
               <tbody>
                 {teams.map((team) => (
-                  <tr key={team.id} className="border-b border-zinc-100 dark:border-zinc-900">
-                    <td className="py-2 pr-2 font-medium">{team.name}</td>
+                  <tr key={team.id} className="border-t border-blue-50 odd:bg-white even:bg-blue-50/40 dark:border-slate-800 dark:odd:bg-slate-900 dark:even:bg-slate-900/60">
+                    <td className="py-2 pl-4 pr-2 font-medium">{team.name}</td>
                     <td className="px-2 text-right">{team.played}</td>
                     <td className="px-2 text-right">{team.won}</td>
                     <td className="px-2 text-right">{team.draw}</td>
                     <td className="px-2 text-right">{team.lost}</td>
                     <td className="px-2 text-right">{team.goalsFor}</td>
                     <td className="px-2 text-right">{team.goalsAgainst}</td>
-                    <td className="pl-2 text-right font-semibold">{team.points}</td>
+                    <td className="py-2 pl-2 pr-4 text-right font-semibold">{team.points}</td>
                   </tr>
                 ))}
               </tbody>
@@ -133,15 +133,11 @@ export default async function LeagueHubPage({ params }: PageProps) {
       )}
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Upcoming fixtures</h2>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">Upcoming fixtures</h2>
         {fixtures.length === 0 ? (
           <p className="text-zinc-500">No upcoming fixtures ingested for this league yet.</p>
         ) : (
-          <div className="flex flex-col gap-2">
-            {fixtures.map((fixture) => (
-              <FixtureRow key={fixture.id} fixture={fixture} showLeague={false} />
-            ))}
-          </div>
+          <FixtureTable fixtures={fixtures} showLeague={false} />
         )}
       </section>
 

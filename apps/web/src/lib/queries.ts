@@ -15,6 +15,7 @@ const fixtureListSelect = {
       awayWinProbability: true,
       predictedScoreHome: true,
       predictedScoreAway: true,
+      expectedGoals: true,
       confidence: true,
     },
   },

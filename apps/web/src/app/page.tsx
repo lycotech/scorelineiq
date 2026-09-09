@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { getUpcomingFixtures, getAllLeaguesWithUpcomingCounts } from "../lib/queries";
-import { formatDateHeading, toDateParam } from "../lib/format";
-import { FixtureRow } from "../components/FixtureRow";
+import { getFixturesForDate, getAllLeaguesWithUpcomingCounts } from "../lib/queries";
+import { formatDateHeading } from "../lib/format";
+import { DayTabs } from "../components/DayTabs";
+import { FixtureTable } from "../components/FixtureTable";
 import { AdSlot } from "../components/AdSlot";
 
 // Rendered per-request rather than statically + ISR-revalidated: a
@@ -11,58 +12,38 @@ import { AdSlot } from "../components/AdSlot";
 // build that doesn't depend on build-time network conditions.
 export const dynamic = "force-dynamic";
 
-function groupByDay(fixtures: Awaited<ReturnType<typeof getUpcomingFixtures>>) {
-  const groups = new Map<string, typeof fixtures>();
-  for (const fixture of fixtures) {
-    const key = toDateParam(fixture.kickoffAt);
-    const existing = groups.get(key);
-    if (existing) {
-      existing.push(fixture);
-    } else {
-      groups.set(key, [fixture]);
-    }
-  }
-  return groups;
-}
-
 export default async function Home() {
+  const today = new Date();
   const [fixtures, leagues] = await Promise.all([
-    getUpcomingFixtures(2),
+    getFixturesForDate(today),
     getAllLeaguesWithUpcomingCounts(),
   ]);
-  const grouped = groupByDay(fixtures);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Today &amp; tomorrow&apos;s predictions</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Today&apos;s predictions</h1>
         <p className="mt-1 text-sm text-zinc-500">
-          Data-driven 1X2, correct score, over/under and BTTS predictions across{" "}
-          <Link href="/accuracy" className="underline">
+          Data-driven 1X2, correct score and expected-goals predictions across{" "}
+          <Link href="/accuracy" className="text-blue-700 underline dark:text-blue-400">
             tracked leagues
           </Link>
           .
         </p>
       </div>
 
-      {fixtures.length === 0 ? (
-        <p className="text-zinc-500">No fixtures in the pipeline right now — check back soon.</p>
-      ) : (
-        Array.from(grouped.entries()).map(([dateKey, dayFixtures]) => (
-          <section key={dateKey} className="flex flex-col gap-3">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-              <Link href={`/predictions/${dateKey}`} className="hover:underline">
-                {formatDateHeading(dayFixtures[0].kickoffAt)}
-              </Link>
-            </h2>
-            <div className="flex flex-col gap-2">
-              {dayFixtures.map((fixture) => (
-                <FixtureRow key={fixture.id} fixture={fixture} />
-              ))}
-            </div>
-          </section>
-        ))
-      )}
+      <DayTabs activeDate={today} />
+
+      <div>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">
+          {formatDateHeading(today)}
+        </h2>
+        {fixtures.length === 0 ? (
+          <p className="text-zinc-500">No fixtures in the pipeline for today — check another day above.</p>
+        ) : (
+          <FixtureTable fixtures={fixtures} />
+        )}
+      </div>
 
       {leagues.length > 0 && (
         <section>
@@ -72,7 +53,7 @@ export default async function Home() {
               <Link
                 key={league.id}
                 href={`/league/${league.slug}`}
-                className="rounded-full border border-zinc-200 px-3 py-1 text-sm hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
+                className="rounded-full border border-blue-200 px-3 py-1 text-sm text-blue-700 hover:border-blue-400 hover:bg-blue-50 dark:border-slate-700 dark:text-blue-300 dark:hover:border-slate-500 dark:hover:bg-slate-800"
               >
                 {league.name}
               </Link>

@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getFixturesForDate } from "../../../lib/queries";
 import { formatDateHeading, parseDateParam } from "../../../lib/format";
-import { FixtureRow } from "../../../components/FixtureRow";
+import { DayTabs } from "../../../components/DayTabs";
+import { FixtureTable } from "../../../components/FixtureTable";
 import { AdSlot } from "../../../components/AdSlot";
 
 export const revalidate = 900;
@@ -37,14 +38,12 @@ export default async function DayArchivePage({ params }: PageProps) {
         </p>
       </div>
 
+      <DayTabs activeDate={parsedDate} />
+
       {fixtures.length === 0 ? (
         <p className="text-zinc-500">No fixtures ingested for this date.</p>
       ) : (
-        <div className="flex flex-col gap-2">
-          {fixtures.map((fixture) => (
-            <FixtureRow key={fixture.id} fixture={fixture} />
-          ))}
-        </div>
+        <FixtureTable fixtures={fixtures} />
       )}
 
       <AdSlot height={250} />

@@ -31,9 +31,9 @@ function ProbabilityBar({ label, value }: { label: string; value: number }) {
         <span>{label}</span>
         <span>{formatPercent(value)}</span>
       </div>
-      <div className="mt-1 h-2 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+      <div className="mt-1 h-2 overflow-hidden rounded-full bg-blue-50 dark:bg-slate-800">
         <div
-          className="h-full rounded-full bg-zinc-900 dark:bg-zinc-100"
+          className="h-full rounded-full bg-blue-600"
           style={{ width: `${Math.round(value * 100)}%` }}
         />
       </div>
@@ -104,7 +104,7 @@ export default async function MatchPage({ params }: PageProps) {
       {fixture.prediction ? (
         <section className="flex flex-col gap-6">
           <div>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">
               Match result (1X2)
             </h2>
             <div className="flex flex-col gap-3">
@@ -114,35 +114,41 @@ export default async function MatchPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+            <div className="rounded-lg border border-blue-100 p-3 dark:border-slate-800">
               <div className="text-xs text-zinc-500">Predicted score</div>
-              <div className="mt-1 text-xl font-semibold">
+              <div className="mt-1 text-xl font-semibold text-blue-700 dark:text-blue-400">
                 {fixture.prediction.predictedScoreHome}-{fixture.prediction.predictedScoreAway}
               </div>
             </div>
-            <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+            <div className="rounded-lg border border-blue-100 p-3 dark:border-slate-800">
+              <div className="text-xs text-zinc-500">Avg. goals</div>
+              <div className="mt-1 text-xl font-semibold text-blue-700 dark:text-blue-400">
+                {fixture.prediction.expectedGoals !== null ? fixture.prediction.expectedGoals.toFixed(2) : "–"}
+              </div>
+            </div>
+            <div className="rounded-lg border border-blue-100 p-3 dark:border-slate-800">
               <div className="text-xs text-zinc-500">Over 2.5 goals</div>
-              <div className="mt-1 text-xl font-semibold">{formatPercent(fixture.prediction.over25Probability)}</div>
+              <div className="mt-1 text-xl font-semibold text-blue-700 dark:text-blue-400">{formatPercent(fixture.prediction.over25Probability)}</div>
             </div>
-            <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+            <div className="rounded-lg border border-blue-100 p-3 dark:border-slate-800">
               <div className="text-xs text-zinc-500">BTTS</div>
-              <div className="mt-1 text-xl font-semibold">{formatPercent(fixture.prediction.bttsProbability)}</div>
+              <div className="mt-1 text-xl font-semibold text-blue-700 dark:text-blue-400">{formatPercent(fixture.prediction.bttsProbability)}</div>
             </div>
-            <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+            <div className="rounded-lg border border-blue-100 p-3 dark:border-slate-800">
               <div className="text-xs text-zinc-500">Confidence</div>
-              <div className="mt-1 text-xl font-semibold">{fixture.prediction.confidence.toFixed(0)}%</div>
+              <div className="mt-1 text-xl font-semibold text-blue-700 dark:text-blue-400">{fixture.prediction.confidence.toFixed(0)}%</div>
             </div>
           </div>
         </section>
       ) : (
-        <div className="rounded-lg border border-dashed border-zinc-300 p-6 text-center text-zinc-500 dark:border-zinc-700">
+        <div className="rounded-lg border border-dashed border-blue-200 p-6 text-center text-zinc-500 dark:border-slate-700">
           Prediction pending — check back closer to kickoff.
         </div>
       )}
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Form guide</h2>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">Form guide</h2>
         <div className="flex flex-col gap-2 text-sm text-zinc-700 dark:text-zinc-300">
           {narrative.map((sentence, i) => (
             <p key={i}>{sentence}</p>

@@ -97,6 +97,10 @@ model Prediction {
   predictedScoreAway Int
   over25Probability  Float
   bttsProbability    Float
+  // Nullable: rows written before this field existed won't have it
+  // until generate-predictions re-runs and upserts them — never
+  // backfilled with a guessed value.
+  expectedGoals      Float?
   confidence         Float
   modelVersion       String
   generatedAt        DateTime @default(now())

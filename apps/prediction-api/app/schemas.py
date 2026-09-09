@@ -32,5 +32,6 @@ class PredictResponse(BaseModel):
     top_correct_scores: list[CorrectScore]
     over_2_5_probability: float
     btts_probability: float
+    expected_total_goals: float
     confidence: float
     model_version: str
