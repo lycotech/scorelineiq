@@ -7,8 +7,8 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <article className="flex max-w-2xl flex-col gap-4 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-      <h1 className="text-2xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">About ScorelineIQ</h1>
+    <article className="flex max-w-2xl flex-col gap-4 text-sm leading-relaxed text-zinc-700">
+      <h1 className="text-2xl font-semibold tracking-tight text-zinc-950">About ScorelineIQ</h1>
 
       <p>
         ScorelineIQ is a free football prediction and statistics site. We publish data-driven

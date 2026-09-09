@@ -33,7 +33,7 @@ export function FixtureTable({
   showLeague?: boolean;
 }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-blue-100 dark:border-slate-800">
+    <div className="overflow-x-auto rounded-lg border border-blue-100">
       <table className="w-full min-w-[640px] text-sm">
         <thead>
           <tr className="bg-blue-600 text-left text-xs font-semibold uppercase tracking-wide text-white">
@@ -50,7 +50,7 @@ export function FixtureTable({
           {fixtures.map((fixture) => (
             <tr
               key={fixture.slug}
-              className="border-t border-blue-50 odd:bg-white even:bg-blue-50/40 hover:bg-blue-50 dark:border-slate-800 dark:odd:bg-slate-900 dark:even:bg-slate-900/60 dark:hover:bg-slate-800"
+              className="border-t border-blue-50 odd:bg-white even:bg-blue-50/40 hover:bg-blue-50"
             >
               <td className="px-4 py-3">
                 <Link href={`/match/${fixture.slug}`} className="block">
@@ -58,22 +58,22 @@ export function FixtureTable({
                     {formatKickoff(fixture.kickoffAt)}
                     {showLeague && <> &middot; {fixture.league.name}</>}
                   </div>
-                  <div className="font-medium text-blue-950 dark:text-blue-100">{fixture.homeTeam.name}</div>
-                  <div className="font-medium text-blue-950 dark:text-blue-100">{fixture.awayTeam.name}</div>
+                  <div className="font-medium text-blue-950">{fixture.homeTeam.name}</div>
+                  <div className="font-medium text-blue-950">{fixture.awayTeam.name}</div>
                 </Link>
               </td>
 
               {fixture.result ? (
                 <>
-                  <td className="px-2 py-3 text-center text-zinc-300 dark:text-zinc-600">–</td>
-                  <td className="px-2 py-3 text-center text-zinc-300 dark:text-zinc-600">–</td>
-                  <td className="px-2 py-3 text-center text-zinc-300 dark:text-zinc-600">–</td>
-                  <td className="px-2 py-3 text-center text-zinc-300 dark:text-zinc-600">–</td>
+                  <td className="px-2 py-3 text-center text-zinc-300">–</td>
+                  <td className="px-2 py-3 text-center text-zinc-300">–</td>
+                  <td className="px-2 py-3 text-center text-zinc-300">–</td>
+                  <td className="px-2 py-3 text-center text-zinc-300">–</td>
                   <td className="px-2 py-3 text-center font-semibold">
                     {fixture.result.homeScore}-{fixture.result.awayScore}
                     <span className="ml-1 text-xs font-normal text-zinc-400">FT</span>
                   </td>
-                  <td className="px-2 py-3 text-center text-zinc-300 dark:text-zinc-600">–</td>
+                  <td className="px-2 py-3 text-center text-zinc-300">–</td>
                 </>
               ) : fixture.prediction ? (
                 <>

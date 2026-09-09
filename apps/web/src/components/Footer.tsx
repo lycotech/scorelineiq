@@ -10,12 +10,12 @@ const FOOTER_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-blue-100 bg-blue-50 dark:border-slate-800 dark:bg-slate-900">
+    <footer className="border-t border-blue-100 bg-blue-50">
       <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-8 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <p>&copy; {new Date().getFullYear()} ScorelineIQ. Statistical analysis, not betting advice.</p>
         <nav className="flex flex-wrap gap-4">
           {FOOTER_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-blue-700 dark:hover:text-blue-300">
+            <Link key={link.href} href={link.href} className="hover:text-blue-700">
               {link.label}
             </Link>
           ))}

@@ -7,7 +7,7 @@ const NAV_LINKS = [
 
 export function Header() {
   return (
-    <header className="bg-blue-700 dark:bg-blue-950">
+    <header className="bg-blue-700">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
         <Link href="/" className="text-lg font-semibold tracking-tight text-white">
           ScorelineIQ

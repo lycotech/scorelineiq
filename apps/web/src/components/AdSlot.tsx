@@ -5,7 +5,7 @@ export function AdSlot({ height = 250, label }: { height?: number; label?: strin
   return (
     <div
       style={{ minHeight: height }}
-      className="flex items-center justify-center rounded border border-dashed border-zinc-300 bg-zinc-50 text-xs text-zinc-400 dark:border-zinc-700 dark:bg-zinc-900"
+      className="flex items-center justify-center rounded border border-dashed border-zinc-300 bg-zinc-50 text-xs text-zinc-400"
       aria-hidden="true"
     >
       {label ?? "Ad slot reserved"}

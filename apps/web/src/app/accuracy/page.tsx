@@ -48,14 +48,14 @@ export default async function AccuracyPage() {
       ) : (
         <>
           <section>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700">
               Overall
             </h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {overall.map((stat) => (
-                <div key={stat.market} className="rounded-lg border border-blue-100 p-3 dark:border-slate-800">
+                <div key={stat.market} className="rounded-lg border border-blue-100 p-3">
                   <div className="text-xs text-zinc-500">{MARKET_LABELS[stat.market] ?? stat.market}</div>
-                  <div className="mt-1 text-xl font-semibold text-blue-700 dark:text-blue-400">{formatPercent(stat.hitRate)}</div>
+                  <div className="mt-1 text-xl font-semibold text-blue-700">{formatPercent(stat.hitRate)}</div>
                   <div className="text-xs text-zinc-400">
                     {stat.hitCount}/{stat.totalCount}
                   </div>
@@ -65,11 +65,11 @@ export default async function AccuracyPage() {
           </section>
 
           <section>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">By league</h2>
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700">By league</h2>
             <div className="flex flex-col gap-4">
               {Array.from(byLeagueGrouped.entries()).map(([slug, stats]) => (
-                <div key={slug} className="rounded-lg border border-blue-100 p-4 dark:border-slate-800">
-                  <Link href={`/league/${slug}`} className="font-medium text-blue-700 hover:underline dark:text-blue-400">
+                <div key={slug} className="rounded-lg border border-blue-100 p-4">
+                  <Link href={`/league/${slug}`} className="font-medium text-blue-700 hover:underline">
                     {stats[0].league.name}
                   </Link>
                   <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">

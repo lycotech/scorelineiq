@@ -81,14 +81,14 @@ export default async function LeagueHubPage({ params }: PageProps) {
 
       {accuracy.length > 0 && (
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700">
             Prediction accuracy
           </h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {accuracy.map((stat) => (
-              <div key={stat.market} className="rounded-lg border border-blue-100 p-3 dark:border-slate-800">
+              <div key={stat.market} className="rounded-lg border border-blue-100 p-3">
                 <div className="text-xs text-zinc-500">{MARKET_LABELS[stat.market] ?? stat.market}</div>
-                <div className="mt-1 text-xl font-semibold text-blue-700 dark:text-blue-400">{formatPercent(stat.hitRate)}</div>
+                <div className="mt-1 text-xl font-semibold text-blue-700">{formatPercent(stat.hitRate)}</div>
                 <div className="text-xs text-zinc-400">{stat.hitCount}/{stat.totalCount}</div>
               </div>
             ))}
@@ -98,8 +98,8 @@ export default async function LeagueHubPage({ params }: PageProps) {
 
       {teams.length > 0 && (
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">Standings</h2>
-          <div className="overflow-x-auto rounded-lg border border-blue-100 dark:border-slate-800">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700">Standings</h2>
+          <div className="overflow-x-auto rounded-lg border border-blue-100">
             <table className="w-full min-w-[480px] text-sm">
               <thead>
                 <tr className="bg-blue-600 text-left text-xs font-semibold uppercase text-white">
@@ -115,7 +115,7 @@ export default async function LeagueHubPage({ params }: PageProps) {
               </thead>
               <tbody>
                 {teams.map((team) => (
-                  <tr key={team.id} className="border-t border-blue-50 odd:bg-white even:bg-blue-50/40 dark:border-slate-800 dark:odd:bg-slate-900 dark:even:bg-slate-900/60">
+                  <tr key={team.id} className="border-t border-blue-50 odd:bg-white even:bg-blue-50/40">
                     <td className="py-2 pl-4 pr-2 font-medium">{team.name}</td>
                     <td className="px-2 text-right">{team.played}</td>
                     <td className="px-2 text-right">{team.won}</td>
@@ -133,7 +133,7 @@ export default async function LeagueHubPage({ params }: PageProps) {
       )}
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">Upcoming fixtures</h2>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700">Upcoming fixtures</h2>
         {fixtures.length === 0 ? (
           <p className="text-zinc-500">No upcoming fixtures ingested for this league yet.</p>
         ) : (
@@ -150,7 +150,7 @@ export default async function LeagueHubPage({ params }: PageProps) {
             {faqs.map((faq) => (
               <div key={faq.question}>
                 <h3 className="font-medium">{faq.question}</h3>
-                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{faq.answer}</p>
+                <p className="mt-1 text-sm text-zinc-600">{faq.answer}</p>
               </div>
             ))}
           </div>

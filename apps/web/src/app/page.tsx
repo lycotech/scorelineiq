@@ -25,7 +25,7 @@ export default async function Home() {
         <h1 className="text-2xl font-semibold tracking-tight">Today&apos;s predictions</h1>
         <p className="mt-1 text-sm text-zinc-500">
           Data-driven 1X2, correct score and expected-goals predictions across{" "}
-          <Link href="/accuracy" className="text-blue-700 underline dark:text-blue-400">
+          <Link href="/accuracy" className="text-blue-700 underline">
             tracked leagues
           </Link>
           .
@@ -35,7 +35,7 @@ export default async function Home() {
       <DayTabs activeDate={today} />
 
       <div>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-700">
           {formatDateHeading(today)}
         </h2>
         {fixtures.length === 0 ? (
@@ -53,7 +53,7 @@ export default async function Home() {
               <Link
                 key={league.id}
                 href={`/league/${league.slug}`}
-                className="rounded-full border border-blue-200 px-3 py-1 text-sm text-blue-700 hover:border-blue-400 hover:bg-blue-50 dark:border-slate-700 dark:text-blue-300 dark:hover:border-slate-500 dark:hover:bg-slate-800"
+                className="rounded-full border border-blue-200 px-3 py-1 text-sm text-blue-700 hover:border-blue-400 hover:bg-blue-50"
               >
                 {league.name}
               </Link>

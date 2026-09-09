@@ -37,7 +37,7 @@ export function DayTabs({ activeDate }: { activeDate: Date }) {
             className={`flex-shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
               isActive
                 ? "bg-blue-600 text-white"
-                : "bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-slate-800 dark:text-blue-300 dark:hover:bg-slate-700"
+                : "bg-blue-50 text-blue-700 hover:bg-blue-100"
             }`}
           >
             {label}
