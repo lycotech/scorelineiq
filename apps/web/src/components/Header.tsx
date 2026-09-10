@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -15,11 +16,8 @@ export function Header() {
   return (
     <header className="border-b border-border bg-surface">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight text-neutral">
-          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-sm font-bold text-white">
-            S
-          </span>
-          ScorelineIQ
+        <Link href="/" className="flex items-center">
+          <Image src="/logo-header.png" alt="ScorelineIQ" width={1902} height={334} priority className="h-8 w-auto" />
         </Link>
         <nav className="flex flex-1 flex-wrap items-center gap-1 text-sm font-medium">
           {NAV_LINKS.map((link) => {
