@@ -251,6 +251,14 @@ export async function getAdminFixtureDetail(id: string) {
   });
 }
 
+export async function getAccumulatorPosts() {
+  return prisma.accumulatorPost.findMany({ orderBy: { createdAt: "desc" } });
+}
+
+export async function getAccumulatorPostById(id: string) {
+  return prisma.accumulatorPost.findUnique({ where: { id } });
+}
+
 export async function getAllFixtureSlugsForSitemap() {
   return prisma.fixture.findMany({ select: { slug: true, updatedAt: true, kickoffAt: true } });
 }

@@ -9,6 +9,10 @@ __pycache__/
 apps/web/.next/
 apps/web/out/
 
+# User-uploaded content (accumulator post screenshots) — lives in a
+# Docker volume in production, never in git.
+apps/web/public/uploads/
+
 # Env files
 .env
 .env.local

@@ -126,6 +126,20 @@ model Result {
   @@index([fixtureId])
 }
 
+model AccumulatorPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  body        String
+  imagePath   String
+  imageWidth  Int
+  imageHeight Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
 model AccuracyStat {
   id          String   @id @default(cuid())
   leagueId    String

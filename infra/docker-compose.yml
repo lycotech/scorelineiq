@@ -46,6 +46,12 @@ services:
       ADSENSE_CLIENT_ID: ${ADSENSE_CLIENT_ID:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
       RAPIDAPI_FOOTBALL_STATS_KEY: ${RAPIDAPI_FOOTBALL_STATS_KEY:-}
+      # Fixed to the runner image's own layout (WORKDIR /repo, see
+      # apps/web/Dockerfile) — not templated from infra/.env since it
+      # isn't a secret or something that varies per deployment.
+      UPLOADS_DIR: /repo/apps/web/public/uploads
+    volumes:
+      - uploads_data:/repo/apps/web/public/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -55,3 +61,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  uploads_data:
