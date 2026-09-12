@@ -11,7 +11,7 @@ apps/web/out/
 
 # User-uploaded content (accumulator post screenshots) — lives in a
 # Docker volume in production, never in git.
-apps/web/public/uploads/
+apps/web/uploads/
 
 # Env files
 .env

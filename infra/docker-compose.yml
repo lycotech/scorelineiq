@@ -48,10 +48,13 @@ services:
       RAPIDAPI_FOOTBALL_STATS_KEY: ${RAPIDAPI_FOOTBALL_STATS_KEY:-}
       # Fixed to the runner image's own layout (WORKDIR /repo, see
       # apps/web/Dockerfile) — not templated from infra/.env since it
-      # isn't a secret or something that varies per deployment.
-      UPLOADS_DIR: /repo/apps/web/public/uploads
+      # isn't a secret or something that varies per deployment. Kept
+      # outside public/ deliberately: see src/app/uploads/[...path]/
+      # route.ts for why files here are served by a route handler
+      # rather than Next's static public/ file handling.
+      UPLOADS_DIR: /repo/apps/web/uploads
     volumes:
-      - uploads_data:/repo/apps/web/public/uploads
+      - uploads_data:/repo/apps/web/uploads
     depends_on:
       postgres:
         condition: service_healthy
