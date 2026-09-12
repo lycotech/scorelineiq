@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getAccumulatorPosts } from "../../lib/queries";
 import { formatShortDate } from "../../lib/format";
 import { AdSlot } from "../../components/AdSlot";
+import { ShareButton } from "../../components/ShareButton";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 
 export default async function AccumulatorsPage() {
   const posts = await getAccumulatorPosts();
+  const baseUrl = process.env.SITE_URL ?? "https://scorelineiq.com";
 
   return (
     <div className="flex flex-col gap-8">
@@ -33,7 +35,7 @@ export default async function AccumulatorsPage() {
       ) : (
         <div className="flex flex-col gap-6">
           {posts.map((post) => (
-            <article key={post.id} className="rounded-lg border border-border bg-surface p-4 sm:p-6">
+            <article key={post.id} id={post.slug} className="scroll-mt-4 rounded-lg border border-border bg-surface p-4 sm:p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
                 <Image
                   src={post.imagePath}
@@ -43,7 +45,14 @@ export default async function AccumulatorsPage() {
                   className="w-full max-w-sm rounded-md border border-border sm:w-72"
                 />
                 <div className="flex-1">
-                  <h2 className="text-lg font-semibold text-neutral">{post.title}</h2>
+                  <div className="flex items-start justify-between gap-3">
+                    <h2 className="text-lg font-semibold text-neutral">{post.title}</h2>
+                    <ShareButton
+                      url={`${baseUrl}/accumulators#${post.slug}`}
+                      title={post.title}
+                      text={post.body || post.title}
+                    />
+                  </div>
                   <div className="mt-0.5 text-xs text-tertiary">{formatShortDate(post.createdAt)}</div>
                   {post.body && <p className="mt-3 whitespace-pre-wrap text-sm text-neutral">{post.body}</p>}
                 </div>
