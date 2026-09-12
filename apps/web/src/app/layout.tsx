@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { ServiceWorkerRegister } from "../components/ServiceWorkerRegister";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,6 +17,15 @@ export const metadata: Metadata = {
     template: "%s | ScorelineIQ",
   },
   description: "Data-driven football predictions and accuracy tracking.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "ScorelineIQ",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#2563eb",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -48,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">{children}</main>
         <Footer />
+        <ServiceWorkerRegister />
       </body>
       {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
