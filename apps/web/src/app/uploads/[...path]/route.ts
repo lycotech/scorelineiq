@@ -43,7 +43,14 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     return new NextResponse(new Uint8Array(data), {
       headers: {
         "Content-Type": contentType,
-        "Cache-Control": "public, max-age=31536000, immutable",
+        // Short-lived, not "immutable" — filenames are random per
+        // upload so this is safe to cache, but a deleted post's image
+        // must actually stop being served within a bounded window
+        // rather than staying live on Cloudflare's edge for a year.
+        // Confirmed live: an aggressive immutable/max-age here made
+        // Cloudflare keep serving a deleted image indefinitely
+        // (cf-cache-status: HIT) even after the origin file was gone.
+        "Cache-Control": "public, max-age=3600",
       },
     });
   } catch {
