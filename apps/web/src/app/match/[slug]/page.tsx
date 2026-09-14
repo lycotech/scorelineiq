@@ -18,9 +18,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!fixture) return {};
 
   const title = `${fixture.homeTeam.name} vs ${fixture.awayTeam.name} prediction`;
+  const description = `${title} — 1X2, correct score, over/under 2.5 and BTTS predictions for this ${fixture.league.name} fixture.`;
   return {
     title,
-    description: `${title} — 1X2, correct score, over/under 2.5 and BTTS predictions for this ${fixture.league.name} fixture.`,
+    description,
+    alternates: { canonical: `/match/${slug}` },
+    openGraph: { title, description },
+    twitter: { title, description },
   };
 }
 

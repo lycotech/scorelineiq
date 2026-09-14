@@ -7,9 +7,16 @@ import { ShareButton } from "../../components/ShareButton";
 
 export const dynamic = "force-dynamic";
 
+const ACCUMULATORS_TITLE = "Accumulators";
+const ACCUMULATORS_DESCRIPTION =
+  "Bet-slip screenshots and booking codes from our accumulator picks, with notes on why we backed each selection.";
+
 export const metadata: Metadata = {
-  title: "Accumulators",
-  description: "Bet-slip screenshots and booking codes from our accumulator picks, with notes on why we backed each selection.",
+  title: ACCUMULATORS_TITLE,
+  description: ACCUMULATORS_DESCRIPTION,
+  alternates: { canonical: "/accumulators" },
+  openGraph: { title: ACCUMULATORS_TITLE, description: ACCUMULATORS_DESCRIPTION },
+  twitter: { title: ACCUMULATORS_TITLE, description: ACCUMULATORS_DESCRIPTION },
 };
 
 export default async function AccumulatorsPage() {

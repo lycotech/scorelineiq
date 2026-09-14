@@ -11,12 +11,30 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.SITE_URL ?? "https://scorelineiq.com";
+const SITE_DESCRIPTION = "Data-driven football predictions and accuracy tracking.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "ScorelineIQ",
     template: "%s | ScorelineIQ",
   },
-  description: "Data-driven football predictions and accuracy tracking.",
+  description: SITE_DESCRIPTION,
+  // Per-page generateMetadata calls (match, league, predictions/[date])
+  // override title/description/openGraph/twitter below with their own
+  // specifics — this is only the fallback for pages that don't.
+  openGraph: {
+    type: "website",
+    siteName: "ScorelineIQ",
+    title: "ScorelineIQ",
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ScorelineIQ",
+    description: SITE_DESCRIPTION,
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -28,32 +46,43 @@ export const viewport: Viewport = {
   themeColor: "#2563eb",
 };
 
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "ScorelineIQ",
+  url: SITE_URL,
+  logo: `${SITE_URL}/icon-512.png`,
+  description: SITE_DESCRIPTION,
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   const gaId = process.env.GA_MEASUREMENT_ID;
   const adsenseClientId = process.env.ADSENSE_CLIENT_ID;
 
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      {adsenseClientId && (
-        <head>
-          {
-            // A raw tag, deliberately not next/script: AdSense's
-            // site-verification crawler reads the initial HTML response
-            // without executing JS, looking for the exact literal
-            // <script> tag from its own instructions. next/script never
-            // emits that literal tag under any strategy — even
-            // "beforeInteractive" only produces a preload hint plus a
-            // `__next_s` data array that Next's runtime uses to insert
-            // the script client-side. Confirmed empirically: verification
-            // failed with next/script and this raw tag is the fix.
-          }
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        {adsenseClientId && (
+          // A raw tag, deliberately not next/script: AdSense's
+          // site-verification crawler reads the initial HTML response
+          // without executing JS, looking for the exact literal
+          // <script> tag from its own instructions. next/script never
+          // emits that literal tag under any strategy — even
+          // "beforeInteractive" only produces a preload hint plus a
+          // `__next_s` data array that Next's runtime uses to insert
+          // the script client-side. Confirmed empirically: verification
+          // failed with next/script and this raw tag is the fix.
           <script
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
             crossOrigin="anonymous"
           />
-        </head>
-      )}
+        )}
+      </head>
       <body className="flex min-h-full flex-col bg-background text-neutral">
         <Header />
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">{children}</main>

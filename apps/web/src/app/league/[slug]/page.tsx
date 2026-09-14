@@ -22,9 +22,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const data = await getLeagueBySlug(slug);
   if (!data) return {};
+  const title = `${data.league.name} predictions & standings`;
+  const description = `Standings, upcoming fixtures, and prediction accuracy for ${data.league.name}.`;
   return {
-    title: `${data.league.name} predictions & standings`,
-    description: `Standings, upcoming fixtures, and prediction accuracy for ${data.league.name}.`,
+    title,
+    description,
+    alternates: { canonical: `/league/${slug}` },
+    openGraph: { title, description },
+    twitter: { title, description },
   };
 }
 

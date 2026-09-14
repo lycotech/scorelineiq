@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { getFixturesForDate, getAllLeaguesWithUpcomingCounts, getAccuracyOverview } from "../lib/queries";
 import { formatRelativeTime } from "../lib/format";
 import { DayTabs } from "../components/DayTabs";
@@ -14,6 +15,23 @@ import { AdSlot } from "../components/AdSlot";
 // At current traffic this trades a small amount of caching for a
 // build that doesn't depend on build-time network conditions.
 export const dynamic = "force-dynamic";
+
+// The root layout's title template ("%s | ScorelineIQ") only applies to
+// titles set by segments *below* the one defining it — a title set here,
+// at the same root segment as the layout, doesn't get it appended
+// automatically (confirmed: every other page gets the suffix, this one
+// didn't until spelled out explicitly).
+const HOME_TITLE = "Today's Football Predictions — 1X2, Correct Score & BTTS | ScorelineIQ";
+const HOME_DESCRIPTION =
+  "Free, data-driven football predictions for today's fixtures across the Premier League, Bundesliga, Ligue 1, Eredivisie and more — 1X2 probabilities, correct scores, over/under and BTTS from a Poisson-Dixon-Coles-Elo model.";
+
+export const metadata: Metadata = {
+  title: HOME_TITLE,
+  description: HOME_DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: { title: HOME_TITLE, description: HOME_DESCRIPTION },
+  twitter: { title: HOME_TITLE, description: HOME_DESCRIPTION },
+};
 
 type FixtureRow = Awaited<ReturnType<typeof getFixturesForDate>>[number];
 
@@ -98,6 +116,7 @@ export default async function Home() {
       <DayTabs activeDate={today} />
 
       <div>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-tertiary">Today&apos;s fixtures</h2>
         {fixtures.length === 0 ? (
           <p className="text-tertiary">No fixtures in the pipeline for today — check another day above.</p>
         ) : (

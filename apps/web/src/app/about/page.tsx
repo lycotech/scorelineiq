@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
 
+const ABOUT_TITLE = "About";
+const ABOUT_DESCRIPTION = "About ScorelineIQ — a free, data-driven football prediction and stats site.";
+
 export const metadata: Metadata = {
-  title: "About",
-  description: "About ScorelineIQ — a free, data-driven football prediction and stats site.",
+  title: ABOUT_TITLE,
+  description: ABOUT_DESCRIPTION,
+  alternates: { canonical: "/about" },
+  openGraph: { title: ABOUT_TITLE, description: ABOUT_DESCRIPTION },
+  twitter: { title: ABOUT_TITLE, description: ABOUT_DESCRIPTION },
 };
 
 export default function AboutPage() {

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy policy",
   description: "What data ScorelineIQ collects and how it's used.",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {

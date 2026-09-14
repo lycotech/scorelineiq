@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 
+const HOW_IT_WORKS_TITLE = "How predictions are made";
+const HOW_IT_WORKS_DESCRIPTION =
+  "The statistical model behind ScorelineIQ's football predictions, explained in plain language.";
+
 export const metadata: Metadata = {
-  title: "How predictions are made",
-  description: "The statistical model behind ScorelineIQ's football predictions, explained in plain language.",
+  title: HOW_IT_WORKS_TITLE,
+  description: HOW_IT_WORKS_DESCRIPTION,
+  alternates: { canonical: "/how-it-works" },
+  openGraph: { title: HOW_IT_WORKS_TITLE, description: HOW_IT_WORKS_DESCRIPTION },
+  twitter: { title: HOW_IT_WORKS_TITLE, description: HOW_IT_WORKS_DESCRIPTION },
 };
 
 export default function HowItWorksPage() {

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Responsible gambling",
   description: "ScorelineIQ publishes statistical analysis, not betting advice. If gambling is affecting you, help is available.",
+  alternates: { canonical: "/responsible-gambling" },
 };
 
 export default function ResponsibleGamblingPage() {

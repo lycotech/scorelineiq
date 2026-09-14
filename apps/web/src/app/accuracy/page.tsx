@@ -6,9 +6,16 @@ import { formatPercent } from "../../lib/format";
 // See src/app/page.tsx for why this is dynamic rather than static+ISR.
 export const dynamic = "force-dynamic";
 
+const ACCURACY_TITLE = "Prediction accuracy";
+const ACCURACY_DESCRIPTION =
+  "ScorelineIQ's rolling hit-rate track record, by market and by league — published in full, win or lose.";
+
 export const metadata: Metadata = {
-  title: "Prediction accuracy",
-  description: "ScorelineIQ's rolling hit-rate track record, by market and by league — published in full, win or lose.",
+  title: ACCURACY_TITLE,
+  description: ACCURACY_DESCRIPTION,
+  alternates: { canonical: "/accuracy" },
+  openGraph: { title: ACCURACY_TITLE, description: ACCURACY_DESCRIPTION },
+  twitter: { title: ACCURACY_TITLE, description: ACCURACY_DESCRIPTION },
 };
 
 const MARKET_LABELS: Record<string, string> = {
