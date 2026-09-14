@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   description: HOME_DESCRIPTION,
   alternates: { canonical: "/" },
   openGraph: { title: HOME_TITLE, description: HOME_DESCRIPTION },
-  twitter: { title: HOME_TITLE, description: HOME_DESCRIPTION },
+  twitter: { card: "summary_large_image", title: HOME_TITLE, description: HOME_DESCRIPTION },
 };
 
 type FixtureRow = Awaited<ReturnType<typeof getFixturesForDate>>[number];

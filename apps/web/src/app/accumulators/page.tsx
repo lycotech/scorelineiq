@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: ACCUMULATORS_DESCRIPTION,
   alternates: { canonical: "/accumulators" },
   openGraph: { title: ACCUMULATORS_TITLE, description: ACCUMULATORS_DESCRIPTION },
-  twitter: { title: ACCUMULATORS_TITLE, description: ACCUMULATORS_DESCRIPTION },
+  twitter: { card: "summary_large_image", title: ACCUMULATORS_TITLE, description: ACCUMULATORS_DESCRIPTION },
 };
 
 export default async function AccumulatorsPage() {

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: ACCURACY_DESCRIPTION,
   alternates: { canonical: "/accuracy" },
   openGraph: { title: ACCURACY_TITLE, description: ACCURACY_DESCRIPTION },
-  twitter: { title: ACCURACY_TITLE, description: ACCURACY_DESCRIPTION },
+  twitter: { card: "summary_large_image", title: ACCURACY_TITLE, description: ACCURACY_DESCRIPTION },
 };
 
 const MARKET_LABELS: Record<string, string> = {

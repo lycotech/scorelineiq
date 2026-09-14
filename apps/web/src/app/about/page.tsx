@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: ABOUT_DESCRIPTION,
   alternates: { canonical: "/about" },
   openGraph: { title: ABOUT_TITLE, description: ABOUT_DESCRIPTION },
-  twitter: { title: ABOUT_TITLE, description: ABOUT_DESCRIPTION },
+  twitter: { card: "summary_large_image", title: ABOUT_TITLE, description: ABOUT_DESCRIPTION },
 };
 
 export default function AboutPage() {

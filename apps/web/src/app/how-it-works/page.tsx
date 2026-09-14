@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: HOW_IT_WORKS_DESCRIPTION,
   alternates: { canonical: "/how-it-works" },
   openGraph: { title: HOW_IT_WORKS_TITLE, description: HOW_IT_WORKS_DESCRIPTION },
-  twitter: { title: HOW_IT_WORKS_TITLE, description: HOW_IT_WORKS_DESCRIPTION },
+  twitter: { card: "summary_large_image", title: HOW_IT_WORKS_TITLE, description: HOW_IT_WORKS_DESCRIPTION },
 };
 
 export default function HowItWorksPage() {
