@@ -1,3 +1,7 @@
-scorelineiq.com, www.scorelineiq.com {
+www.scorelineiq.com {
+	redir https://scorelineiq.com{uri} permanent
+}
+
+scorelineiq.com {
 	reverse_proxy web:3000
 }
