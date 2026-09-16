@@ -259,6 +259,22 @@ export async function getAccumulatorPostById(id: string) {
   return prisma.accumulatorPost.findUnique({ where: { id } });
 }
 
+export async function getImportedExternalLeagues() {
+  const leagues = await prisma.league.findMany({
+    where: { externalId: { startsWith: "rapidapi:" } },
+    select: { id: true, externalId: true, name: true },
+  });
+  return new Map(leagues.map((l) => [l.externalId.replace("rapidapi:", ""), l]));
+}
+
+export async function getImportedExternalFixtures() {
+  const fixtures = await prisma.fixture.findMany({
+    where: { externalId: { startsWith: "rapidapi:" } },
+    select: { id: true, externalId: true },
+  });
+  return new Map(fixtures.map((f) => [f.externalId.replace("rapidapi:", ""), f.id]));
+}
+
 export async function getAllFixtureSlugsForSitemap() {
   return prisma.fixture.findMany({ select: { slug: true, updatedAt: true, kickoffAt: true } });
 }

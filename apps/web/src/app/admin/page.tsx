@@ -23,11 +23,19 @@ export default async function AdminDashboardPage() {
           <h1 className="text-xl font-bold text-neutral">Admin — Fixtures</h1>
           <p className="text-sm text-tertiary">Last 2 days through the next 9 days. Click a fixture to view or edit its prediction.</p>
         </div>
-        <form method="POST" action="/api/admin/logout">
-          <button type="submit" className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-tertiary hover:bg-background">
-            Sign out
-          </button>
-        </form>
+        <div className="flex items-center gap-2">
+          <Link href="/admin/external-fixtures" className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-tertiary hover:bg-background">
+            More fixtures
+          </Link>
+          <Link href="/admin/accumulators" className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-tertiary hover:bg-background">
+            Accumulators
+          </Link>
+          <form method="POST" action="/api/admin/logout">
+            <button type="submit" className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-tertiary hover:bg-background">
+              Sign out
+            </button>
+          </form>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-border bg-surface">
