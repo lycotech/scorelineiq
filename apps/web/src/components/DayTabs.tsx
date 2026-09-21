@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { formatShortDate, toDateParam } from "../lib/format";
 
-// A short window around today — matches the day-archive pages that
-// already exist at /predictions/[date], just surfaced as quick tabs
-// instead of requiring a URL edit to browse nearby days.
+// Matches ingest-fixtures' own 9-day forward window (see that job) —
+// confirmed live: fixtures imported for +6/+9 days out were already in
+// the sitemap and fully functional, just unreachable through normal
+// browsing because this tab row stopped at +4, silently hiding real
+// content that existed a click away via direct URL only.
 const DAYS_BEFORE = 1;
-const DAYS_AFTER = 4;
+const DAYS_AFTER = 9;
 
 export function DayTabs({ activeDate }: { activeDate: Date }) {
   const today = new Date();
