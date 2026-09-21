@@ -22,12 +22,19 @@ export async function POST(request: NextRequest) {
       throw new Error("Missing required fixture fields");
     }
 
+    // Slugs must be globally unique (across both this source and the
+    // primary pipeline), but two different rapidapi leagueIds can
+    // legitimately share a human-chosen name (e.g. multiple UEFA
+    // Nations League groups) — confirmed live: a batch import hit
+    // "Unique constraint failed on the fields: (slug)" on exactly this.
+    // Suffixing with the source's own external ID guarantees
+    // uniqueness deterministically without a query-then-retry dance.
     const league = await prisma.league.upsert({
       where: { externalId: `rapidapi:${leagueExternalId}` },
       create: {
         externalId: `rapidapi:${leagueExternalId}`,
         name: leagueName,
-        slug: slugify(leagueName),
+        slug: `${slugify(leagueName)}-${leagueExternalId}`,
         country: "Unknown",
       },
       // Never overwrite a name an admin already gave this league on a
@@ -40,7 +47,7 @@ export async function POST(request: NextRequest) {
       create: {
         externalId: `rapidapi:${homeTeamExternalId}`,
         name: homeTeamName,
-        slug: slugify(homeTeamName),
+        slug: `${slugify(homeTeamName)}-${homeTeamExternalId}`,
         leagueId: league.id,
       },
       update: {},
@@ -51,7 +58,7 @@ export async function POST(request: NextRequest) {
       create: {
         externalId: `rapidapi:${awayTeamExternalId}`,
         name: awayTeamName,
-        slug: slugify(awayTeamName),
+        slug: `${slugify(awayTeamName)}-${awayTeamExternalId}`,
         leagueId: league.id,
       },
       update: {},
