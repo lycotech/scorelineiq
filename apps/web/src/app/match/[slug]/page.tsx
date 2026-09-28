@@ -52,6 +52,12 @@ export default async function MatchPage({ params }: PageProps) {
 
   const narrative = generateMatchNarrative(fixture.homeTeam, fixture.awayTeam);
 
+  // Google's BreadcrumbList treats itemListElement[].item as the
+  // entry's @id and rejects a relative path ("Invalid URL in field
+  // id") — every item needs to be absolute, same convention as
+  // layout.tsx/sitemap.ts.
+  const siteUrl = process.env.SITE_URL ?? "https://scorelineiq.com";
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SportsEvent",
@@ -66,8 +72,13 @@ export default async function MatchPage({ params }: PageProps) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "/" },
-      { "@type": "ListItem", position: 2, name: fixture.league.name, item: `/league/${fixture.league.slug}` },
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: fixture.league.name,
+        item: `${siteUrl}/league/${fixture.league.slug}`,
+      },
       {
         "@type": "ListItem",
         position: 3,

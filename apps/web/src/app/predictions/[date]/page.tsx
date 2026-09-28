@@ -41,11 +41,16 @@ export default async function DayArchivePage({ params }: PageProps) {
 
   const fixtures = await getFixturesForDate(parsedDate);
 
+  // See apps/web/src/app/match/[slug]/page.tsx for why this needs to
+  // be absolute (Google rejects a relative itemListElement[].item as
+  // an invalid @id).
+  const siteUrl = process.env.SITE_URL ?? "https://scorelineiq.com";
+
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
       { "@type": "ListItem", position: 2, name: formatDateHeading(parsedDate) },
     ],
   };
