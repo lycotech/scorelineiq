@@ -44,7 +44,7 @@ services:
       SENTRY_DSN: ${SENTRY_DSN:-}
       GA_MEASUREMENT_ID: ${GA_MEASUREMENT_ID:-}
       ADSENSE_CLIENT_ID: ${ADSENSE_CLIENT_ID:-}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:-}
       RAPIDAPI_FOOTBALL_STATS_KEY: ${RAPIDAPI_FOOTBALL_STATS_KEY:-}
       # Fixed to the runner image's own layout (WORKDIR /repo, see
       # apps/web/Dockerfile) — not templated from infra/.env since it

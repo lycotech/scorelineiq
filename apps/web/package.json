@@ -11,18 +11,21 @@
     "sync-teams-and-form": "tsx --env-file=.env src/jobs/sync-teams-and-form.ts",
     "score-results": "tsx --env-file=.env src/jobs/score-results.ts",
     "generate-predictions": "tsx --env-file=.env src/jobs/generate-predictions.ts",
-    "nightly-accuracy": "tsx --env-file=.env src/jobs/nightly-accuracy.ts"
+    "nightly-accuracy": "tsx --env-file=.env src/jobs/nightly-accuracy.ts",
+    "admin-user": "tsx --env-file=.env src/scripts/admin-user.ts"
   },
   "dependencies": {
     "@next/third-parties": "15.5.25",
     "@scorelineiq/db": "*",
     "@sentry/node": "^10.73.0",
+    "bcryptjs": "^2.4.3",
     "next": "15.5.25",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.7",

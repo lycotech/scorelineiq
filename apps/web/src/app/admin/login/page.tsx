@@ -12,18 +12,27 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
       <h1 className="text-xl font-bold text-neutral">Admin sign in</h1>
       {error && (
         <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-          Incorrect password.
+          Incorrect email or password.
         </p>
       )}
       <form method="POST" action="/api/admin/login" className="flex flex-col gap-3">
         <input type="hidden" name="next" value={next ?? "/admin"} />
+        <label className="flex flex-col gap-1 text-sm text-tertiary">
+          Email
+          <input
+            type="email"
+            name="email"
+            required
+            autoFocus
+            className="rounded-md border border-border-strong bg-surface px-3 py-2 text-sm text-neutral focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+        </label>
         <label className="flex flex-col gap-1 text-sm text-tertiary">
           Password
           <input
             type="password"
             name="password"
             required
-            autoFocus
             className="rounded-md border border-border-strong bg-surface px-3 py-2 text-sm text-neutral focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </label>

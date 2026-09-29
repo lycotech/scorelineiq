@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ADMIN_SESSION_COOKIE, isValidAdminSession } from "./lib/admin-auth";
+import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "./lib/admin-auth";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const cookie = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-  if (await isValidAdminSession(cookie)) {
+  if (await verifyAdminSession(cookie)) {
     return NextResponse.next();
   }
 
