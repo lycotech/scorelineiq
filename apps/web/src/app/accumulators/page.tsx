@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { getAccumulatorPosts } from "../../lib/queries";
 import { formatShortDate } from "../../lib/format";
@@ -53,9 +54,13 @@ export default async function AccumulatorsPage() {
                 />
                 <div className="flex-1">
                   <div className="flex items-start justify-between gap-3">
-                    <h2 className="text-lg font-semibold text-neutral">{post.title}</h2>
+                    <h2 className="text-lg font-semibold text-neutral">
+                      <Link href={`/accumulators/${post.slug}`} className="hover:underline">
+                        {post.title}
+                      </Link>
+                    </h2>
                     <ShareButton
-                      url={`${baseUrl}/accumulators#${post.slug}`}
+                      url={`${baseUrl}/accumulators/${post.slug}`}
                       title={post.title}
                       text={post.body || post.title}
                     />
