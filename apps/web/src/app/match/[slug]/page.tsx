@@ -50,7 +50,7 @@ export default async function MatchPage({ params }: PageProps) {
   const fixture = await getFixtureBySlug(slug);
   if (!fixture) notFound();
 
-  const narrative = generateMatchNarrative(fixture.homeTeam, fixture.awayTeam);
+  const narrative = generateMatchNarrative(fixture.homeTeam, fixture.awayTeam, fixture.prediction);
 
   // Google's BreadcrumbList treats itemListElement[].item as the
   // entry's @id and rejects a relative path ("Invalid URL in field
@@ -163,7 +163,7 @@ export default async function MatchPage({ params }: PageProps) {
       )}
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-primary">Form guide</h2>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-primary">Match analysis</h2>
         <div className="flex flex-col gap-2 text-sm text-zinc-700">
           {narrative.map((sentence, i) => (
             <p key={i}>{sentence}</p>
