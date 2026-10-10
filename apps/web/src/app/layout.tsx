@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { AffiliateSkyscraper } from "../components/AffiliateSkyscraper";
 import { ServiceWorkerRegister } from "../components/ServiceWorkerRegister";
 import "./globals.css";
 
@@ -85,6 +86,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="flex min-h-full flex-col bg-background text-neutral">
         <Header />
+        <AffiliateSkyscraper />
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">{children}</main>
         <Footer />
         <ServiceWorkerRegister />
