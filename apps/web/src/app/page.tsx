@@ -94,7 +94,7 @@ export default async function Home() {
           <h1 className="text-2xl font-bold tracking-tight text-neutral">Today&apos;s Predictions</h1>
           <p className="mt-1 text-sm text-tertiary">
             Data-driven 1X2, correct score and expected-goals predictions across{" "}
-            <Link href="/accuracy" className="text-primary underline">
+            <Link href="#leagues-we-track" className="text-primary underline">
               tracked leagues
             </Link>
             .
@@ -125,7 +125,7 @@ export default async function Home() {
       </div>
 
       {leagues.length > 0 && (
-        <section>
+        <section id="leagues-we-track" className="scroll-mt-4">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-tertiary">Leagues we track</h2>
           <div className="flex flex-wrap gap-2">
             {leagues.map((league) => (

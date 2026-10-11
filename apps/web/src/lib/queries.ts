@@ -103,7 +103,7 @@ export async function getFixtureBySlug(slug: string) {
       slug: true,
       kickoffAt: true,
       status: true,
-      league: { select: { name: true, slug: true, country: true } },
+      league: { select: { id: true, name: true, slug: true, country: true } },
       homeTeam: {
         select: {
           id: true,
@@ -137,6 +137,24 @@ export async function getFixtureBySlug(slug: string) {
       prediction: true,
       result: true,
     },
+  });
+}
+
+// A handful of other upcoming fixtures in the same league — gives match
+// pages (the large majority of the site's URLs) somewhere to link
+// onward instead of dead-ending at a breadcrumb, which otherwise leaves
+// Google with no path to discover adjacent fixtures from there.
+export async function getOtherUpcomingFixturesInLeague(leagueId: string, excludeFixtureId: string, limit = 4) {
+  return prisma.fixture.findMany({
+    where: {
+      leagueId,
+      id: { not: excludeFixtureId },
+      status: "SCHEDULED",
+      kickoffAt: { gte: new Date() },
+    },
+    select: fixtureListSelect,
+    orderBy: { kickoffAt: "asc" },
+    take: limit,
   });
 }
 

@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getFixtureBySlug } from "../../../lib/queries";
+import { getFixtureBySlug, getOtherUpcomingFixturesInLeague } from "../../../lib/queries";
 import { generateMatchNarrative } from "../../../lib/narrative";
-import { formatKickoff, formatPercent } from "../../../lib/format";
+import { formatKickoff, formatPercent, toDateParam, formatDateHeading } from "../../../lib/format";
 import { AdSlot } from "../../../components/AdSlot";
+import { FixtureTable } from "../../../components/FixtureTable";
 
 export const revalidate = 300;
 
@@ -51,6 +52,8 @@ export default async function MatchPage({ params }: PageProps) {
   if (!fixture) notFound();
 
   const narrative = generateMatchNarrative(fixture.homeTeam, fixture.awayTeam, fixture.prediction);
+  const otherFixtures = await getOtherUpcomingFixturesInLeague(fixture.league.id, fixture.id);
+  const kickoffDateParam = toDateParam(fixture.kickoffAt);
 
   // Google's BreadcrumbList treats itemListElement[].item as the
   // entry's @id and rejects a relative path ("Invalid URL in field
@@ -170,6 +173,23 @@ export default async function MatchPage({ params }: PageProps) {
           ))}
         </div>
       </section>
+
+      <p className="text-sm text-zinc-500">
+        See all{" "}
+        <Link href={`/predictions/${kickoffDateParam}`} className="text-primary underline">
+          predictions for {formatDateHeading(fixture.kickoffAt)}
+        </Link>
+        .
+      </p>
+
+      {otherFixtures.length > 0 && (
+        <section>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-primary">
+            More {fixture.league.name} fixtures
+          </h2>
+          <FixtureTable fixtures={otherFixtures} showLeague={false} />
+        </section>
+      )}
 
       <AdSlot height={250} />
 
