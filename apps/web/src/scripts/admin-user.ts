@@ -7,8 +7,7 @@
 //   list                            list all admin users (no hashes)
 import bcrypt from "bcryptjs";
 import { prisma } from "@scorelineiq/db";
-
-const MIN_PASSWORD_LENGTH = 12;
+import { MIN_PASSWORD_LENGTH } from "../lib/admin-auth";
 
 function usageAndExit(): never {
   console.error(

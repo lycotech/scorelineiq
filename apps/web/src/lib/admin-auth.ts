@@ -1,4 +1,7 @@
 export const ADMIN_SESSION_COOKIE = "admin_session";
+// Shared with src/scripts/admin-user.ts so the CLI and the in-app
+// change-password form enforce the same minimum.
+export const MIN_PASSWORD_LENGTH = 12;
 const SESSION_LIFETIME_SECONDS = 60 * 60 * 24 * 7; // 7 days, matches the cookie's maxAge
 
 interface SessionPayload {

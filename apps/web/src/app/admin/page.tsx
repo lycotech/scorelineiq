@@ -30,6 +30,9 @@ export default async function AdminDashboardPage() {
           <Link href="/admin/accumulators" className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-tertiary hover:bg-background">
             Accumulators
           </Link>
+          <Link href="/admin/change-password" className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-tertiary hover:bg-background">
+            Change password
+          </Link>
           <form method="POST" action="/api/admin/logout">
             <button type="submit" className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-tertiary hover:bg-background">
               Sign out
