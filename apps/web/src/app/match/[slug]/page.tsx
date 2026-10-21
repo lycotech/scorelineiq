@@ -29,6 +29,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+// schema.org's EventStatusType has no distinct "in progress" or
+// "finished" value — EventScheduled covers both, since it just means
+// the event happened/happens as planned (as opposed to cancelled,
+// postponed, or rescheduled).
+function eventStatusLd(status: string): string {
+  if (status === "POSTPONED") return "https://schema.org/EventPostponed";
+  if (status === "CANCELLED") return "https://schema.org/EventCancelled";
+  return "https://schema.org/EventScheduled";
+}
+
 function ProbabilityBar({ label, value }: { label: string; value: number }) {
   return (
     <div>
@@ -67,6 +77,20 @@ export default async function MatchPage({ params }: PageProps) {
     name: `${fixture.homeTeam.name} vs ${fixture.awayTeam.name}`,
     startDate: fixture.kickoffAt.toISOString(),
     sport: "Football",
+    eventStatus: eventStatusLd(fixture.status),
+    // Football-Data.org's free tier doesn't return venue/stadium data,
+    // so this is deliberately coarse (country only) rather than
+    // guessing at a specific ground — real data, not a fabricated
+    // address. See the league.country field already captured by
+    // ingest-fixtures.ts.
+    location: {
+      "@type": "Place",
+      name: fixture.league.country,
+      address: { "@type": "PostalAddress", addressCountry: fixture.league.country },
+    },
+    description: narrative.slice(0, 2).join(" "),
+    image: `${siteUrl}/match/${fixture.slug}/opengraph-image`,
+    organizer: { "@type": "SportsOrganization", name: fixture.league.name },
     homeTeam: { "@type": "SportsTeam", name: fixture.homeTeam.name },
     awayTeam: { "@type": "SportsTeam", name: fixture.awayTeam.name },
   };
