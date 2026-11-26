@@ -4,6 +4,8 @@ import { getAllLeaguesWithUpcomingCounts } from "../lib/queries";
 const FOOTER_LINKS = [
   { href: "/about", label: "About" },
   { href: "/how-it-works", label: "How predictions are made" },
+  { href: "/accuracy", label: "Accuracy" },
+  { href: "/contact", label: "Contact" },
   { href: "/responsible-gambling", label: "Responsible gambling" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },

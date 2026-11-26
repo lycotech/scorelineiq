@@ -51,26 +51,28 @@ function pct(value: number): number {
 
 function formSentence(team: TeamSeasonStats): string {
   if (!hasStats(team)) {
-    return `${team.name} haven't had a standings update yet this season, so their form isn't reflected here.`;
+    return `${team.name} have not yet had a standings update this season, so their current form is not reflected in the analysis below.`;
   }
 
   const winRate = team.won / team.played;
   const goalDiff = team.goalsFor - team.goalsAgainst;
   const goalsPerGame = (team.goalsFor / team.played).toFixed(1);
+  const concededPerGame = (team.goalsAgainst / team.played).toFixed(1);
+  const sign = goalDiff >= 0 ? "+" : "";
 
   if (winRate >= 0.6) {
-    return `${team.name} have been in excellent form, winning ${team.won} of their ${team.played} matches this season and scoring ${goalsPerGame} goals a game.`;
+    return `${team.name} are one of the stronger sides in the division this season, winning ${team.won} of their ${team.played} league matches — a ${(winRate * 100).toFixed(0)}% win rate — and averaging ${goalsPerGame} goals scored per game (goal difference: ${sign}${goalDiff}).`;
   }
   if (winRate >= 0.4) {
-    return `${team.name} have a solid record so far — ${team.won}W ${team.draw}D ${team.lost}L from ${team.played} games, with a goal difference of ${goalDiff >= 0 ? "+" : ""}${goalDiff}.`;
+    return `${team.name} are in decent shape with ${team.won} wins, ${team.draw} draws and ${team.lost} defeats from ${team.played} matches this season, scoring ${goalsPerGame} and conceding ${concededPerGame} goals per game on average (goal difference: ${sign}${goalDiff}).`;
   }
   if (winRate >= 0.2) {
-    return `${team.name} have had a mixed season, taking ${team.points} points from ${team.played} matches so far.`;
+    return `${team.name} have had an inconsistent season to date, collecting ${team.points} points from ${team.played} matches — scoring ${goalsPerGame} and conceding ${concededPerGame} per game.`;
   }
-  return `${team.name} have struggled this season, managing just ${team.won} win${team.won === 1 ? "" : "s"} in ${team.played} matches.`;
+  return `${team.name} have found it difficult this season, winning just ${team.won} of their ${team.played} league matches and conceding ${concededPerGame} goals per game on average.`;
 }
 
-function formComparisonSentence(home: TeamSeasonStats, away: TeamSeasonStats): string | null {
+function leaguePositionSentence(home: TeamSeasonStats, away: TeamSeasonStats): string | null {
   if (!hasStats(home) || !hasStats(away)) return null;
 
   const homePpg = home.points / home.played;
@@ -78,11 +80,23 @@ function formComparisonSentence(home: TeamSeasonStats, away: TeamSeasonStats): s
   const diff = Math.abs(homePpg - awayPpg);
 
   if (diff < 0.15) {
-    return `On points-per-game, the two sides are closely matched, which points to a tight contest.`;
+    return `The two sides are separated by very little on points-per-game this season, suggesting a closely contested match is on the cards.`;
+  }
+
+  if (diff >= 0.5) {
+    const stronger = homePpg > awayPpg ? home.name : away.name;
+    const weaker = stronger === home.name ? away.name : home.name;
+    const strongerPpg = Math.max(homePpg, awayPpg).toFixed(2);
+    const weakerPpg = Math.min(homePpg, awayPpg).toFixed(2);
+    return `There is a meaningful form gap between these two sides heading into the match — ${stronger} are averaging ${strongerPpg} points per game compared to ${weaker}'s ${weakerPpg}.`;
   }
 
   const stronger = homePpg > awayPpg ? home.name : away.name;
-  return `${stronger} have the stronger points-per-game record between the two coming into this match.`;
+  return `${stronger} have the stronger points-per-game record of the two sides coming into this fixture.`;
+}
+
+function formComparisonSentence(home: TeamSeasonStats, away: TeamSeasonStats): string | null {
+  return leaguePositionSentence(home, away);
 }
 
 function attackComparisonSentence(home: TeamSeasonStats, away: TeamSeasonStats): string | null {
@@ -160,22 +174,22 @@ function modelLeanSentence(
 
 function goalsOutlookSentence(prediction: MatchPrediction): string {
   const { over25Probability: o25, bttsProbability: btts, expectedGoals } = prediction;
-  const egText = expectedGoals !== null ? ` with an expected total of ${expectedGoals.toFixed(1)} goals` : "";
+  const egText = expectedGoals !== null ? `, with the model projecting a combined total of around ${expectedGoals.toFixed(1)} goals` : "";
 
   if (o25 >= 0.65) {
-    return `Goals look likely here — over 2.5 is rated at ${pct(o25)}%${egText}.`;
+    return `The goal model rates this as a higher-scoring fixture — over 2.5 goals is given a ${pct(o25)}% probability${egText}. Both teams are expected to contribute to the scoring (BTTS: ${pct(btts)}%).`;
   }
   if (o25 <= 0.35) {
-    return `This is shaping up as a tighter, lower-scoring game — under 2.5 goals is favoured at ${pct(1 - o25)}%${egText}.`;
+    return `This looks like a tight, low-scoring affair according to the model — under 2.5 goals is favoured at ${pct(1 - o25)}%${egText}. At least one side may be kept off the scoresheet (BTTS: ${pct(btts)}%).`;
   }
 
-  const bttsText =
-    btts >= 0.55
-      ? `both teams are given a good chance of scoring (${pct(btts)}%)`
-      : btts <= 0.45
-        ? `at least one side is given a real chance of being kept out (BTTS at just ${pct(btts)}%)`
-        : `both-teams-to-score sits close to a coin flip at ${pct(btts)}%`;
-  return `It's a closer call on goals overall — over 2.5 is at ${pct(o25)}%, and ${bttsText}.`;
+  const bttsComment =
+    btts >= 0.6
+      ? `both teams look likely to score (BTTS: ${pct(btts)}%)`
+      : btts <= 0.4
+        ? `one side could be kept out (BTTS: only ${pct(btts)}%)`
+        : `both-teams-to-score is roughly even at ${pct(btts)}%`;
+  return `Goal expectation sits in the middle ground — over 2.5 is rated at ${pct(o25)}%${egText}, and ${bttsComment}.`;
 }
 
 export function generateMatchNarrative(
