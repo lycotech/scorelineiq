@@ -12,7 +12,8 @@
     "sync-teams-and-form": "tsx --env-file=.env src/jobs/sync-teams-and-form.ts",
     "score-results": "tsx --env-file=.env src/jobs/score-results.ts",
     "generate-predictions": "tsx --env-file=.env src/jobs/generate-predictions.ts",
-    "nightly-accuracy": "tsx --env-file=.env src/jobs/nightly-accuracy.ts",
+    "coverage-audit": "tsx --env-file=.env src/jobs/coverage-audit.ts",
+    "nightly-accuracy":"tsx --env-file=.env src/jobs/nightly-accuracy.ts",
     "evaluation-plan": "tsx --env-file=.env src/scripts/evaluation-plan.ts",
     "admin-user":"tsx --env-file=.env src/scripts/admin-user.ts"
   },

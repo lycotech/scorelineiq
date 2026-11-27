@@ -1,4 +1,5 @@
 import { prisma } from "@scorelineiq/db";
+import { summarizeCoverage, utcDay } from "./coverage";
 import { applyPlan } from "./evaluation-plan";
 import { buildProbabilityReport, type EvalRow } from "./scoring";
 
@@ -370,6 +371,40 @@ export async function getProbabilityReport() {
     firstKickoff,
     lastKickoff,
   };
+}
+
+// Per-day coverage for fixtures kicking off in [from, to): how many were
+// played, predicted before kickoff, graded, and how many the data
+// provider listed that we never had (from the daily coverage-audit job).
+export async function getCoverage(from: Date, to: Date) {
+  const [fixtures, providerRows] = await Promise.all([
+    prisma.fixture.findMany({
+      where: { kickoffAt: { gte: from, lt: to } },
+      select: {
+        kickoffAt: true,
+        status: true,
+        result: { select: { id: true } },
+        predictionSnapshots: { take: 1, select: { id: true } },
+      },
+    }),
+    prisma.coverageDay.findMany({ where: { day: { gte: from, lt: to } } }),
+  ]);
+
+  return summarizeCoverage(
+    fixtures.map((f) => ({
+      kickoffAt: f.kickoffAt,
+      status: f.status,
+      hasSnapshot: f.predictionSnapshots.length > 0,
+      hasResult: f.result !== null,
+    })),
+    providerRows.map((r) => ({
+      day: utcDay(r.day),
+      providerFinished: r.providerFinished,
+      missingFromDb: r.missingFromDb,
+      checkedAt: r.checkedAt,
+    })),
+    new Date(),
+  );
 }
 
 // ---------------------------------------------------------------------------
