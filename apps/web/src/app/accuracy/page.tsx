@@ -43,7 +43,11 @@ export default async function AccuracyPage() {
         <p className="mt-1 max-w-2xl text-sm text-zinc-500">
           Every prediction we publish is scored against the final result the next day, win or
           lose. These are all-time hit rates since we started tracking — nothing is cherry-picked
-          or removed.
+          or removed. See the{" "}
+          <Link href="/history" className="text-primary hover:underline">
+            match-by-match prediction history
+          </Link>
+          .
         </p>
       </div>
 

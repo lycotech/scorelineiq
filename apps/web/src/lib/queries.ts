@@ -308,3 +308,83 @@ export async function getAllFixtureSlugsForSitemap() {
 export async function getAllLeagueSlugsForSitemap() {
   return prisma.league.findMany({ select: { slug: true, updatedAt: true } });
 }
+
+// ---------------------------------------------------------------------------
+// Public prediction history (append-only PredictionSnapshot record)
+// ---------------------------------------------------------------------------
+
+export const HISTORY_ROW_LIMIT = 500;
+
+export interface HistoryRow {
+  fixtureSlug: string;
+  leagueName: string;
+  homeTeam: string;
+  awayTeam: string;
+  kickoffAt: Date;
+  lockedAt: Date;
+  versions: number;
+  homeWinProbability: number;
+  drawProbability: number;
+  awayWinProbability: number;
+  predictedScoreHome: number;
+  predictedScoreAway: number;
+  over25Probability: number;
+  bttsProbability: number;
+  modelVersion: string;
+  result: { homeScore: number; awayScore: number } | null;
+}
+
+// One row per fixture kicking off in [from, to): the LAST snapshot
+// recorded before kickoff (the DB guarantees every snapshot is), plus how
+// many versions were recorded in total.
+export async function getPredictionHistory(from: Date, to: Date) {
+  const [fixtures, bounds, totalSnapshots] = await Promise.all([
+    prisma.fixture.findMany({
+      where: { kickoffAt: { gte: from, lt: to }, predictionSnapshots: { some: {} } },
+      orderBy: { kickoffAt: "desc" },
+      take: HISTORY_ROW_LIMIT + 1,
+      select: {
+        slug: true,
+        kickoffAt: true,
+        league: { select: { name: true } },
+        homeTeam: { select: { name: true } },
+        awayTeam: { select: { name: true } },
+        result: { select: { homeScore: true, awayScore: true } },
+        predictionSnapshots: { orderBy: { createdAt: "desc" } },
+      },
+    }),
+    prisma.predictionSnapshot.aggregate({ _min: { createdAt: true }, _max: { createdAt: true } }),
+    prisma.predictionSnapshot.count(),
+  ]);
+
+  const truncated = fixtures.length > HISTORY_ROW_LIMIT;
+  const rows: HistoryRow[] = fixtures.slice(0, HISTORY_ROW_LIMIT).map((f) => {
+    const latest = f.predictionSnapshots[0];
+    return {
+      fixtureSlug: f.slug,
+      leagueName: f.league.name,
+      homeTeam: f.homeTeam.name,
+      awayTeam: f.awayTeam.name,
+      kickoffAt: f.kickoffAt,
+      lockedAt: latest.createdAt,
+      versions: f.predictionSnapshots.length,
+      homeWinProbability: latest.homeWinProbability,
+      drawProbability: latest.drawProbability,
+      awayWinProbability: latest.awayWinProbability,
+      predictedScoreHome: latest.predictedScoreHome,
+      predictedScoreAway: latest.predictedScoreAway,
+      over25Probability: latest.over25Probability,
+      bttsProbability: latest.bttsProbability,
+      modelVersion: latest.modelVersion,
+      result: f.result,
+    };
+  });
+
+  return {
+    rows,
+    truncated,
+    recordStartedAt: bounds._min.createdAt,
+    lastRecordedAt: bounds._max.createdAt,
+    totalSnapshots,
+  };
+}

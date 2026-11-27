@@ -78,6 +78,7 @@ model Fixture {
   kickoffAt    DateTime
   status       FixtureStatus @default(SCHEDULED)
   prediction   Prediction?
+  predictionSnapshots PredictionSnapshot[]
   result       Result?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -106,6 +107,37 @@ model Prediction {
   generatedAt        DateTime @default(now())
 
   @@index([fixtureId])
+}
+
+// Append-only public record of what we predicted BEFORE kickoff.
+// `Prediction` above is the live, overwritable row the site renders;
+// this table is the audit trail. Immutability is enforced in Postgres
+// itself (see migration 20261127000000_add_prediction_snapshot): triggers
+// reject UPDATE, DELETE and TRUNCATE, stamp `createdAt` with the DB
+// clock, copy `kickoffAt` from the Fixture, and reject any INSERT at or
+// after kickoff. A new row is appended only when the prediction content
+// actually changes (`contentHash`), so re-running a job never duplicates.
+model PredictionSnapshot {
+  id                 String   @id @default(cuid())
+  fixtureId          String
+  fixture            Fixture  @relation(fields: [fixtureId], references: [id], onDelete: Restrict)
+  homeWinProbability Float
+  drawProbability    Float
+  awayWinProbability Float
+  predictedScoreHome Int
+  predictedScoreAway Int
+  over25Probability  Float
+  bttsProbability    Float
+  expectedGoals      Float?
+  confidence         Float
+  modelVersion       String
+  contentHash        String
+  // Both set/overwritten by the DB trigger; values supplied by the app are ignored.
+  kickoffAt          DateTime
+  createdAt          DateTime @default(now())
+
+  @@index([fixtureId, createdAt])
+  @@index([createdAt])
 }
 
 enum ResultOutcome {

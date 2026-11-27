@@ -1,5 +1,6 @@
 import { prisma } from "@scorelineiq/db";
 import { triggerRevalidate } from "./revalidate";
+import { KickoffPassedError, savePredictionWithSnapshot } from "./snapshots";
 
 export interface PredictResponse {
   home_win_probability: number;
@@ -107,35 +108,27 @@ export async function generatePredictionForFixture(fixtureId: string): Promise<G
 
   const prediction = await callPredict(fixture.homeTeam, fixture.awayTeam, leagueAvgGoals);
 
-  await prisma.prediction.upsert({
-    where: { fixtureId: fixture.id },
-    create: {
-      fixtureId: fixture.id,
-      homeWinProbability: prediction.home_win_probability,
-      drawProbability: prediction.draw_probability,
-      awayWinProbability: prediction.away_win_probability,
-      predictedScoreHome: prediction.predicted_score_home,
-      predictedScoreAway: prediction.predicted_score_away,
-      over25Probability: prediction.over_2_5_probability,
-      bttsProbability: prediction.btts_probability,
-      expectedGoals: prediction.expected_total_goals,
-      confidence: prediction.confidence,
-      modelVersion: prediction.model_version,
-    },
-    update: {
-      homeWinProbability: prediction.home_win_probability,
-      drawProbability: prediction.draw_probability,
-      awayWinProbability: prediction.away_win_probability,
-      predictedScoreHome: prediction.predicted_score_home,
-      predictedScoreAway: prediction.predicted_score_away,
-      over25Probability: prediction.over_2_5_probability,
-      bttsProbability: prediction.btts_probability,
-      expectedGoals: prediction.expected_total_goals,
-      confidence: prediction.confidence,
-      modelVersion: prediction.model_version,
-      generatedAt: new Date(),
-    },
-  });
+  try {
+    await prisma.$transaction((tx) =>
+      savePredictionWithSnapshot(tx, fixture.id, {
+        homeWinProbability: prediction.home_win_probability,
+        drawProbability: prediction.draw_probability,
+        awayWinProbability: prediction.away_win_probability,
+        predictedScoreHome: prediction.predicted_score_home,
+        predictedScoreAway: prediction.predicted_score_away,
+        over25Probability: prediction.over_2_5_probability,
+        bttsProbability: prediction.btts_probability,
+        expectedGoals: prediction.expected_total_goals,
+        confidence: prediction.confidence,
+        modelVersion: prediction.model_version,
+      }),
+    );
+  } catch (error) {
+    if (error instanceof KickoffPassedError) {
+      return { status: "pending", reason: error.message };
+    }
+    throw error;
+  }
 
   await triggerRevalidate(["/", `/match/${fixture.slug}`]);
 
@@ -164,19 +157,13 @@ export async function saveManualPrediction(fixtureId: string, input: ManualPredi
     select: { id: true, slug: true },
   });
 
-  await prisma.prediction.upsert({
-    where: { fixtureId: fixture.id },
-    create: {
-      fixtureId: fixture.id,
+  // Throws KickoffPassedError after kickoff; the admin route surfaces it.
+  await prisma.$transaction((tx) =>
+    savePredictionWithSnapshot(tx, fixture.id, {
       ...input,
       modelVersion: "manual-override",
-    },
-    update: {
-      ...input,
-      modelVersion: "manual-override",
-      generatedAt: new Date(),
-    },
-  });
+    }),
+  );
 
   await triggerRevalidate(["/", `/match/${fixture.slug}`]);
 }
