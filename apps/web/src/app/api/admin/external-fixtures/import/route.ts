@@ -3,6 +3,7 @@ import { prisma, FixtureStatus } from "@scorelineiq/db";
 import { slugify } from "../../../../../lib/slugify";
 import { formatDate } from "../../../../../lib/football-data";
 import { getPublicOrigin } from "../../../../../lib/request-origin";
+import { validateLeagueName } from "../../../../../lib/league-names";
 
 export async function POST(request: NextRequest) {
   const origin = getPublicOrigin(request);
@@ -16,10 +17,20 @@ export async function POST(request: NextRequest) {
     const awayTeamExternalId = String(formData.get("awayTeamExternalId") ?? "");
     const awayTeamName = String(formData.get("awayTeamName") ?? "");
     const leagueExternalId = String(formData.get("leagueExternalId") ?? "");
-    const leagueName = String(formData.get("leagueName") ?? `League #${leagueExternalId}`);
+    const leagueNameRaw = formData.get("leagueName");
 
     if (!fixtureExternalId || !homeTeamExternalId || !awayTeamExternalId || !leagueExternalId || !kickoffAt) {
       throw new Error("Missing required fixture fields");
+    }
+
+    // The form only sends a name for a league we haven't seen. A new league
+    // must be given a real name; a placeholder is rejected, never saved.
+    const existingLeague = await prisma.league.findUnique({ where: { externalId: `rapidapi:${leagueExternalId}` } });
+    let leagueName = existingLeague?.name ?? "";
+    if (!existingLeague) {
+      const checked = validateLeagueName(typeof leagueNameRaw === "string" ? leagueNameRaw : null);
+      if ("error" in checked) throw new Error(checked.error);
+      leagueName = checked.name;
     }
 
     // Slugs must be globally unique (across both this source and the

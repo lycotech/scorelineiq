@@ -15,6 +15,7 @@
     "coverage-audit": "tsx --env-file=.env src/jobs/coverage-audit.ts",
     "nightly-accuracy":"tsx --env-file=.env src/jobs/nightly-accuracy.ts",
     "evaluation-plan": "tsx --env-file=.env src/scripts/evaluation-plan.ts",
+    "name-leagues": "tsx --env-file=.env src/scripts/name-leagues.ts",
     "admin-user":"tsx --env-file=.env src/scripts/admin-user.ts"
   },
   "dependencies": {
