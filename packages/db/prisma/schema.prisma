@@ -140,6 +140,24 @@ model PredictionSnapshot {
   @@index([createdAt])
 }
 
+// A pre-registered evaluation: the period and sample size the public
+// track record will be judged on, fixed BEFORE the matches are played.
+// Append-only, enforced in Postgres (see migration
+// 20261127100000_add_evaluation_plan): no UPDATE/DELETE/TRUNCATE,
+// `createdAt` from the DB clock, and `startsAt` must not be earlier than
+// `createdAt` — so a window can't be backdated to a flattering stretch.
+// The newest plan is the current one; older plans stay visible.
+model EvaluationPlan {
+  id             String   @id @default(cuid())
+  name           String
+  startsAt       DateTime
+  endsAt         DateTime
+  targetMatches  Int
+  createdAt      DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 enum ResultOutcome {
   HOME_WIN
   DRAW

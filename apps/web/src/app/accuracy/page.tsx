@@ -139,10 +139,50 @@ export default async function AccuracyPage() {
           </Link>
           .
         </p>
+        {quality.plan ? (
+          <div className="mb-4 rounded-lg border border-border bg-surface p-4 text-sm">
+            <div className="font-medium">Pre-registered evaluation: {quality.plan.name}</div>
+            <p className="mt-1 text-zinc-500">
+              Fixed on {formatShortDate(quality.plan.createdAt)}, before the period began: matches
+              kicking off from {formatShortDate(quality.plan.startsAt)} up to (not including){" "}
+              {formatShortDate(quality.plan.endsAt)}, counting the first {quality.plan.targetMatches}{" "}
+              with a recorded pre-kickoff prediction. The plan cannot be edited or deleted.
+              {quality.earlierPlans > 0
+                ? ` ${quality.earlierPlans} earlier plan${quality.earlierPlans === 1 ? " was" : "s were"} superseded by this one.`
+                : ""}
+            </p>
+            <p className="mt-2">
+              <span className="font-semibold">
+                {quality.scoredMatches} of {quality.plan.targetMatches}
+              </span>{" "}
+              matches scored —{" "}
+              {quality.planStatus === "complete"
+                ? "complete: the sample is frozen and these figures are final."
+                : quality.planStatus === "closed"
+                  ? "the period ended before the target was reached; these figures are final on the matches available."
+                  : quality.planStatus === "not_started"
+                    ? "the period has not started yet."
+                    : "in progress: figures below are interim and will change as matches finish."}
+            </p>
+            {quality.withoutPrediction > 0 ? (
+              <p className="mt-1 text-zinc-500">
+                {quality.withoutPrediction} finished match{quality.withoutPrediction === 1 ? "" : "es"} in this
+                period had no recorded pre-kickoff prediction and {quality.withoutPrediction === 1 ? "is" : "are"}{" "}
+                not scored.
+              </p>
+            ) : null}
+          </div>
+        ) : (
+          <p className="mb-4 rounded-lg border border-border bg-surface p-4 text-sm text-zinc-500">
+            Exploratory figures: no pre-registered evaluation period has been published yet, so
+            these cover every scored match in the record and should not be read as a fixed-sample
+            result.
+          </p>
+        )}
         {quality.report === null ? (
           <p className="text-sm text-zinc-500">
-            Not enough scored matches in the verified record yet ({quality.scoredMatches} of at least{" "}
-            {MIN_SAMPLE}). Scores are withheld until the sample is large enough to mean something.
+            Not enough scored matches yet ({quality.scoredMatches}; at least {MIN_SAMPLE} are needed
+            before any score is shown).
           </p>
         ) : (
           <div className="flex flex-col gap-4">
