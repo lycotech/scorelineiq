@@ -1,4 +1,5 @@
 import { prisma } from "@scorelineiq/db";
+import { applyPlan } from "./evaluation-plan";
 import { buildProbabilityReport, type EvalRow } from "./scoring";
 
 const fixtureListSelect = {
@@ -314,10 +315,27 @@ export async function getAllLeagueSlugsForSitemap() {
 // finished match, the LAST snapshot recorded before kickoff (the DB
 // guarantees it is pre-kickoff and immutable) against the real result.
 // Deliberately does not read the overwritable Prediction table.
+//
+// If a pre-registered EvaluationPlan exists, only the matches it defines
+// count (kickoff inside its period, first `targetMatches` in kickoff
+// order) and matches played without a prediction are disclosed. With no
+// plan the report covers every scored match and is labelled exploratory.
 export async function getProbabilityReport() {
+  const [plan, planCount] = await Promise.all([
+    prisma.evaluationPlan.findFirst({ orderBy: { createdAt: "desc" } }),
+    prisma.evaluationPlan.count(),
+  ]);
+
   const fixtures = await prisma.fixture.findMany({
-    where: { result: { isNot: null }, predictionSnapshots: { some: {} } },
+    where: {
+      result: { isNot: null },
+      ...(plan
+        ? { kickoffAt: { gte: plan.startsAt, lt: plan.endsAt } }
+        : { predictionSnapshots: { some: {} } }),
+    },
+    orderBy: [{ kickoffAt: "asc" }, { id: "asc" }],
     select: {
+      id: true,
       kickoffAt: true,
       result: { select: { homeScore: true, awayScore: true } },
       predictionSnapshots: {
@@ -334,10 +352,15 @@ export async function getProbabilityReport() {
     },
   });
 
+  const withFlag = fixtures.map((f) => ({ ...f, hasPrediction: f.predictionSnapshots.length > 0 }));
+  const applied = plan
+    ? applyPlan(plan, withFlag, new Date())
+    : { included: withFlag.filter((f) => f.hasPrediction), withoutPrediction: 0, status: null };
+
   const rows: EvalRow[] = [];
   let firstKickoff: Date | null = null;
   let lastKickoff: Date | null = null;
-  for (const f of fixtures) {
+  for (const f of applied.included) {
     const snap = f.predictionSnapshots[0];
     if (!snap || !f.result) continue;
     rows.push({
@@ -354,6 +377,10 @@ export async function getProbabilityReport() {
   }
 
   return {
+    plan,
+    earlierPlans: Math.max(0, planCount - 1),
+    planStatus: applied.status,
+    withoutPrediction: applied.withoutPrediction,
     scoredMatches: rows.length,
     report: buildProbabilityReport(rows),
     firstKickoff,

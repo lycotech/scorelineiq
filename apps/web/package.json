@@ -13,7 +13,8 @@
     "score-results": "tsx --env-file=.env src/jobs/score-results.ts",
     "generate-predictions": "tsx --env-file=.env src/jobs/generate-predictions.ts",
     "nightly-accuracy": "tsx --env-file=.env src/jobs/nightly-accuracy.ts",
-    "admin-user": "tsx --env-file=.env src/scripts/admin-user.ts"
+    "evaluation-plan": "tsx --env-file=.env src/scripts/evaluation-plan.ts",
+    "admin-user":"tsx --env-file=.env src/scripts/admin-user.ts"
   },
   "dependencies": {
     "@next/third-parties": "15.5.25",
