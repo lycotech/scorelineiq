@@ -105,7 +105,10 @@ export default async function ExternalFixturesPage({ searchParams }: PageProps) 
                             <input
                               type="text"
                               name="leagueName"
-                              defaultValue={`League #${fixture.leagueExternalId}`}
+                              required
+                              minLength={3}
+                              maxLength={80}
+                              placeholder="League name (required)"
                               className="w-40 rounded-md border border-border-strong bg-surface px-2 py-1 text-xs text-neutral focus:border-primary focus:outline-none"
                             />
                           )}
