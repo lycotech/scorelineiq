@@ -27,9 +27,6 @@ export default async function AdminDashboardPage() {
           <Link href="/admin/external-fixtures" className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-tertiary hover:bg-background">
             More fixtures
           </Link>
-          <Link href="/admin/accumulators" className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-tertiary hover:bg-background">
-            Accumulators
-          </Link>
           <Link href="/admin/change-password" className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-tertiary hover:bg-background">
             Change password
           </Link>
