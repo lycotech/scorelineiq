@@ -1,9 +1,5 @@
 import type { MetadataRoute } from "next";
-import {
-  getAllAccumulatorSlugsForSitemap,
-  getAllFixtureSlugsForSitemap,
-  getAllLeagueSlugsForSitemap,
-} from "../lib/queries";
+import { getAllFixtureSlugsForSitemap, getAllLeagueSlugsForSitemap } from "../lib/queries";
 import { toDateParam } from "../lib/format";
 
 // A single sitemap file is enough at current volume (dozens of URLs).
@@ -20,15 +16,10 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.SITE_URL ?? "https://scorelineiq.com";
 
-  const [fixtures, leagues, accumulators] = await Promise.all([
-    getAllFixtureSlugsForSitemap(),
-    getAllLeagueSlugsForSitemap(),
-    getAllAccumulatorSlugsForSitemap(),
-  ]);
+  const [fixtures, leagues] = await Promise.all([getAllFixtureSlugsForSitemap(), getAllLeagueSlugsForSitemap()]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, changeFrequency: "hourly", priority: 1 },
-    { url: `${baseUrl}/accumulators`, changeFrequency: "daily", priority: 0.6 },
     { url: `${baseUrl}/accuracy`, changeFrequency: "daily", priority: 0.8 },
     { url: `${baseUrl}/how-it-works`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/about`, changeFrequency: "monthly", priority: 0.3 },
@@ -58,12 +49,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  const accumulatorRoutes: MetadataRoute.Sitemap = accumulators.map((post) => ({
-    url: `${baseUrl}/accumulators/${post.slug}`,
-    lastModified: post.updatedAt,
-    changeFrequency: "monthly",
-    priority: 0.4,
-  }));
-
-  return [...staticRoutes, ...leagueRoutes, ...matchRoutes, ...dayArchiveRoutes, ...accumulatorRoutes];
+  return [...staticRoutes, ...leagueRoutes, ...matchRoutes, ...dayArchiveRoutes];
 }

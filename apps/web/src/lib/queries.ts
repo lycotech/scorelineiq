@@ -271,22 +271,6 @@ export async function getAdminFixtureDetail(id: string) {
   });
 }
 
-export async function getAccumulatorPosts() {
-  return prisma.accumulatorPost.findMany({ orderBy: { createdAt: "desc" } });
-}
-
-export async function getAccumulatorPostById(id: string) {
-  return prisma.accumulatorPost.findUnique({ where: { id } });
-}
-
-export async function getAccumulatorPostBySlug(slug: string) {
-  return prisma.accumulatorPost.findUnique({ where: { slug } });
-}
-
-export async function getAllAccumulatorSlugsForSitemap() {
-  return prisma.accumulatorPost.findMany({ select: { slug: true, updatedAt: true } });
-}
-
 export async function getImportedExternalLeagues() {
   const leagues = await prisma.league.findMany({
     where: { externalId: { startsWith: "rapidapi:" } },
