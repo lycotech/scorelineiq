@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "tsx --test src/lib/*.test.ts",
     "ingest-fixtures": "tsx --env-file=.env src/jobs/ingest-fixtures.ts",
     "sync-teams-and-form": "tsx --env-file=.env src/jobs/sync-teams-and-form.ts",
     "score-results": "tsx --env-file=.env src/jobs/score-results.ts",

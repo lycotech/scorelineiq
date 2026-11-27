@@ -1,4 +1,5 @@
 import { prisma } from "@scorelineiq/db";
+import { buildProbabilityReport, type EvalRow } from "./scoring";
 
 const fixtureListSelect = {
   id: true,
@@ -307,6 +308,57 @@ export async function getAllFixtureSlugsForSitemap() {
 
 export async function getAllLeagueSlugsForSitemap() {
   return prisma.league.findMany({ select: { slug: true, updatedAt: true } });
+}
+
+// Brier score / calibration over the verifiable record: for every
+// finished match, the LAST snapshot recorded before kickoff (the DB
+// guarantees it is pre-kickoff and immutable) against the real result.
+// Deliberately does not read the overwritable Prediction table.
+export async function getProbabilityReport() {
+  const fixtures = await prisma.fixture.findMany({
+    where: { result: { isNot: null }, predictionSnapshots: { some: {} } },
+    select: {
+      kickoffAt: true,
+      result: { select: { homeScore: true, awayScore: true } },
+      predictionSnapshots: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+        select: {
+          homeWinProbability: true,
+          drawProbability: true,
+          awayWinProbability: true,
+          over25Probability: true,
+          bttsProbability: true,
+        },
+      },
+    },
+  });
+
+  const rows: EvalRow[] = [];
+  let firstKickoff: Date | null = null;
+  let lastKickoff: Date | null = null;
+  for (const f of fixtures) {
+    const snap = f.predictionSnapshots[0];
+    if (!snap || !f.result) continue;
+    rows.push({
+      pHome: snap.homeWinProbability,
+      pDraw: snap.drawProbability,
+      pAway: snap.awayWinProbability,
+      pOver25: snap.over25Probability,
+      pBtts: snap.bttsProbability,
+      homeScore: f.result.homeScore,
+      awayScore: f.result.awayScore,
+    });
+    if (!firstKickoff || f.kickoffAt < firstKickoff) firstKickoff = f.kickoffAt;
+    if (!lastKickoff || f.kickoffAt > lastKickoff) lastKickoff = f.kickoffAt;
+  }
+
+  return {
+    scoredMatches: rows.length,
+    report: buildProbabilityReport(rows),
+    firstKickoff,
+    lastKickoff,
+  };
 }
 
 // ---------------------------------------------------------------------------
