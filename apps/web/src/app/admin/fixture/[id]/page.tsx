@@ -145,10 +145,12 @@ export default async function AdminFixtureDetailPage({ params, searchParams }: P
           <NumField label="Away win %" name="awayWinProbability" defaultValue={p ? Math.round(p.awayWinProbability * 100) : ""} />
           <NumField label="Predicted home score" name="predictedScoreHome" defaultValue={p?.predictedScoreHome ?? ""} />
           <NumField label="Predicted away score" name="predictedScoreAway" defaultValue={p?.predictedScoreAway ?? ""} />
-          <NumField label="Avg. total goals" name="expectedGoals" step="0.01" defaultValue={p?.expectedGoals ?? ""} />
+          <NumField label="Expected total goals" name="expectedGoals" step="0.01" defaultValue={p?.expectedGoals ?? ""} />
           <NumField label="Over 2.5 %" name="over25Probability" defaultValue={p ? Math.round(p.over25Probability * 100) : ""} />
           <NumField label="BTTS %" name="bttsProbability" defaultValue={p ? Math.round(p.bttsProbability * 100) : ""} />
-          <NumField label="Confidence %" name="confidence" defaultValue={p ? Math.round(p.confidence) : ""} />
+          <p className="col-span-full text-xs text-tertiary">
+            Home + draw + away must total 100%. Confidence is set automatically to the largest of the three.
+          </p>
           <div className="col-span-full">
             <button type="submit" className="rounded-md border border-border-strong px-3 py-2 text-sm font-semibold text-neutral hover:bg-background">
               Save manual prediction

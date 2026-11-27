@@ -42,9 +42,10 @@ export default function HowItWorksPage() {
           lower one.
         </p>
         <p>
-          Home advantage is applied as a fixed multiplier — historically, home teams score
-          meaningfully more goals than they would on a neutral ground, and the model accounts for
-          this. The resulting numbers — expected goals for each team in this specific fixture — are
+          Home advantage is applied as a fixed ratio between the two sides — historically, home
+          teams score meaningfully more goals than away teams, and the model accounts for this
+          while keeping the two sides&apos; combined expected goals anchored to the league average
+          (so two average teams are expected to produce an average number of goals). The resulting numbers — expected goals for each team in this specific fixture — are
           the foundation everything else is built on.
         </p>
       </section>
@@ -111,10 +112,17 @@ export default function HowItWorksPage() {
             definitely happen.
           </li>
           <li>
-            <strong>Predicted correct score</strong> — the single scoreline with the highest
-            probability under the model. It is typically a low-scoring result (1-0, 1-1, 2-0) —
+            <strong>Most likely score</strong> — the single scoreline with the highest
+            probability under the goal model. It is typically a low-scoring result (1-0, 1-1, 2-0) —
             correct scores are individually low-probability even when the model is right about
-            the direction.
+            the direction. Because a draw is just one scoreline among many, the most likely score
+            can be a draw even when one side is the favourite to win, and it can show fewer goals
+            than the expected-goals figure, which is the average over every scoreline.
+          </li>
+          <li>
+            <strong>Expected goals</strong> — the model&apos;s average total goals for the match,
+            taking every possible scoreline into account. It is a mean, so it is usually higher
+            than the goals in the single most likely score.
           </li>
           <li>
             <strong>Over/Under 2.5</strong> — the probability that the match has 3 or more goals
@@ -127,9 +135,17 @@ export default function HowItWorksPage() {
             will be close but competitive.
           </li>
           <li>
-            <strong>Confidence score</strong> — a composite 0–100 score that reflects how strongly
-            the model leans toward one outcome. A high confidence score means the model sees a clear
-            favourite; a low one means the match is genuinely open.
+            <strong>Confidence</strong> — simply the probability the model gives its most likely
+            result (home win, draw or away win), so it always matches the largest 1X2 figure. We
+            label 60% and above as high confidence, 45–59% as moderate, and anything lower as a
+            close match. A higher figure means the model sees a clearer favourite; it is not a
+            guarantee.
+          </li>
+          <li>
+            <strong>Which numbers come from where</strong> — the 1X2 split is the goal model
+            adjusted by Elo ratings (see Step 3). The most likely score, expected goals,
+            over/under and BTTS come from the goal model alone, so in the occasional match where
+            Elo shifts the favourite, the score and goals figures are not adjusted to follow it.
           </li>
         </ul>
       </section>

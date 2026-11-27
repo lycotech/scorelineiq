@@ -24,9 +24,11 @@ MAX_GOALS = 8
 # validate against.
 RHO = -0.13
 
-# Average historical home-scoring boost in domestic football (teams
-# score ~30-45% more at home). Same caveat as RHO: a fixed literature
-# value pending our own calibration.
+# Average historical ratio of home to away scoring in domestic football
+# (teams score ~30-45% more at home). Same caveat as RHO: a fixed
+# literature value pending our own calibration. Used as a RATIO between
+# the two sides — see expected_goals for how it is split so the average
+# stays at the league figure.
 HOME_ADVANTAGE = 1.35
 
 
@@ -64,8 +66,18 @@ def expected_goals(
     away_attack = away_goals_for_avg / league_avg_goals
     away_defense = away_goals_against_avg / league_avg_goals
 
-    lam = league_avg_goals * home_attack * away_defense * HOME_ADVANTAGE
-    mu = league_avg_goals * away_attack * home_defense
+    # `league_avg_goals` is goals per TEAM per game, i.e. the mean of the
+    # home and away scoring rates. Applying the home boost to the home
+    # side alone (the v1 behaviour) pushed the two sides' mean 17.5%
+    # above the league average, inflating expected total goals and the
+    # Over 2.5 probability for every fixture. Split the boost so the home
+    # and away rates keep the HOME_ADVANTAGE ratio but average back to
+    # the league figure: home + away == 2 * league_avg for average teams.
+    home_factor = 2 * HOME_ADVANTAGE / (1 + HOME_ADVANTAGE)
+    away_factor = 2 / (1 + HOME_ADVANTAGE)
+
+    lam = league_avg_goals * home_attack * away_defense * home_factor
+    mu = league_avg_goals * away_attack * home_defense * away_factor
     return lam, mu
 
 

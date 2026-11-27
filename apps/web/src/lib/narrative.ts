@@ -10,6 +10,8 @@
 // expose that, and we don't yet have enough of our own Result history
 // to derive it reliably. Upgradeable once that history accumulates.
 
+import { leanTier, splitPercents } from "./prediction-display";
+
 interface TeamSeasonStats {
   name: string;
   played: number | null;
@@ -145,50 +147,58 @@ function modelLeanSentence(
 ): string {
   const { homeWinProbability: h, drawProbability: d, awayWinProbability: a } = prediction;
   const max = Math.max(h, d, a);
+  // Same rounding as the probability bars and table on the page, so the
+  // sentence never quotes a number that differs by a point from them.
+  const [hp, dp, ap] = splitPercents(h, d, a);
 
   if (max === h) {
-    if (h >= 0.6) {
-      return `The model leans heavily toward a ${home.name} win, giving it a ${pct(h)}% chance — the clearest signal of the three possible outcomes.`;
+    const tier = leanTier(h);
+    if (tier === "high") {
+      return `The model leans heavily toward a ${home.name} win, giving it a ${hp}% chance — the clearest signal of the three possible outcomes.`;
     }
-    if (h >= 0.45) {
-      return `${home.name} are the model's favourite at ${pct(h)}%, though a draw or ${away.name} win remain live possibilities.`;
+    if (tier === "moderate") {
+      return `${home.name} are the model's favourite at ${hp}%, though a draw or ${away.name} win remain live possibilities.`;
     }
-    return `${home.name} are rated the most likely outcome at just ${pct(h)}%, in what the model sees as a genuinely open match.`;
+    return `${home.name} are rated the most likely outcome at just ${hp}%, in what the model sees as a genuinely open match.`;
   }
 
   if (max === a) {
-    if (a >= 0.6) {
-      return `The model leans heavily toward a ${away.name} win, giving it a ${pct(a)}% chance — the clearest signal of the three possible outcomes.`;
+    const tier = leanTier(a);
+    if (tier === "high") {
+      return `The model leans heavily toward a ${away.name} win, giving it a ${ap}% chance — the clearest signal of the three possible outcomes.`;
     }
-    if (a >= 0.45) {
-      return `${away.name} are the model's favourite at ${pct(a)}%, though a draw or ${home.name} win remain live possibilities.`;
+    if (tier === "moderate") {
+      return `${away.name} are the model's favourite at ${ap}%, though a draw or ${home.name} win remain live possibilities.`;
     }
-    return `${away.name} are rated the most likely outcome at just ${pct(a)}%, in what the model sees as a genuinely open match.`;
+    return `${away.name} are rated the most likely outcome at just ${ap}%, in what the model sees as a genuinely open match.`;
   }
 
   if (d >= 0.35) {
-    return `This is one of the model's more draw-leaning fixtures, with a stalemate given a ${pct(d)}% chance.`;
+    return `This is one of the model's more draw-leaning fixtures, with a stalemate given a ${dp}% chance.`;
   }
-  return `No single outcome stands out strongly — the draw edges it at ${pct(d)}%, just ahead of both match-winner options.`;
+  return `No single outcome stands out strongly — the draw edges it at ${dp}%, just ahead of both match-winner options.`;
 }
 
 function goalsOutlookSentence(prediction: MatchPrediction): string {
   const { over25Probability: o25, bttsProbability: btts, expectedGoals } = prediction;
   const egText = expectedGoals !== null ? `, with the model projecting a combined total of around ${expectedGoals.toFixed(1)} goals` : "";
 
-  if (o25 >= 0.65) {
-    return `The goal model rates this as a higher-scoring fixture — over 2.5 goals is given a ${pct(o25)}% probability${egText}. Both teams are expected to contribute to the scoring (BTTS: ${pct(btts)}%).`;
-  }
-  if (o25 <= 0.35) {
-    return `This looks like a tight, low-scoring affair according to the model — under 2.5 goals is favoured at ${pct(1 - o25)}%${egText}. At least one side may be kept off the scoresheet (BTTS: ${pct(btts)}%).`;
-  }
-
+  // The BTTS clause is chosen from the BTTS number itself, never implied
+  // by the over/under figure: a lopsided 3-0 style game can be high-scoring
+  // with BTTS well under 50%.
   const bttsComment =
     btts >= 0.6
       ? `both teams look likely to score (BTTS: ${pct(btts)}%)`
       : btts <= 0.4
         ? `one side could be kept out (BTTS: only ${pct(btts)}%)`
         : `both-teams-to-score is roughly even at ${pct(btts)}%`;
+
+  if (o25 >= 0.65) {
+    return `The goal model rates this as a higher-scoring fixture — over 2.5 goals is given a ${pct(o25)}% probability${egText}, and ${bttsComment}.`;
+  }
+  if (o25 <= 0.35) {
+    return `This looks like a tight, low-scoring affair according to the model — under 2.5 goals is favoured at ${100 - pct(o25)}%${egText}, and ${bttsComment}.`;
+  }
   return `Goal expectation sits in the middle ground — over 2.5 is rated at ${pct(o25)}%${egText}, and ${bttsComment}.`;
 }
 

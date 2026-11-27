@@ -3,7 +3,10 @@ from fastapi import FastAPI
 from app.models import elo, poisson
 from app.schemas import CorrectScore, PredictRequest, PredictResponse
 
-MODEL_VERSION = "poisson-dixon-coles-elo-v1"
+# v2: home advantage is now split between the sides so expected total
+# goals for average teams equals the league average (v1 over-stated it by
+# 17.5%). Predictions from different versions are not directly comparable.
+MODEL_VERSION = "poisson-dixon-coles-elo-v2"
 
 app = FastAPI(title="ScorelineIQ Prediction Engine")
 

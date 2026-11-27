@@ -5,6 +5,7 @@ import { getFixturesForDate, getAllLeaguesWithUpcomingCounts, getAccuracyOvervie
 import { formatRelativeTime } from "../lib/format";
 import { DayTabs } from "../components/DayTabs";
 import { FixtureTable, predictedOutcome, outcomeLabel } from "../components/FixtureTable";
+import { topPercent } from "../lib/prediction-display";
 import { StatsBar, type StatsBarData } from "../components/StatsBar";
 import { LiveScores } from "../components/LiveScores";
 import { AdSlot } from "../components/AdSlot";
@@ -58,7 +59,12 @@ function buildStatsBarData(fixtures: FixtureRow[], accuracy: Awaited<ReturnType<
         slug: topPickFixture.slug,
         label: `${topPickFixture.homeTeam.name} vs ${topPickFixture.awayTeam.name}`,
         outcomeLabel: outcomeLabel(predictedOutcome(topPickFixture.prediction), topPickFixture),
-        confidence: topPickFixture.prediction.confidence,
+        // Same number as the favourite's bar on the fixture table / match page.
+        confidence: topPercent(
+          topPickFixture.prediction.homeWinProbability,
+          topPickFixture.prediction.drawProbability,
+          topPickFixture.prediction.awayWinProbability,
+        ),
       }
     : null;
 

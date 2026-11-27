@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { formatKickoff, formatPercent } from "../lib/format";
+import { LEAN_TIER_LABEL, leanTier, splitPercents } from "../lib/prediction-display";
 
 export interface FixtureTableRowData {
   slug: string;
@@ -37,10 +38,8 @@ export function outcomeLabel(outcome: Outcome, fixture: FixtureTableRowData): st
   return "Draw";
 }
 
-function confidenceTier(confidence: number): string {
-  if (confidence >= 70) return "High confidence";
-  if (confidence >= 50) return "Moderate confidence";
-  return "Close match";
+function confidenceTier(p: NonNullable<FixtureTableRowData["prediction"]>): string {
+  return LEAN_TIER_LABEL[leanTier(Math.max(p.homeWinProbability, p.drawProbability, p.awayWinProbability))];
 }
 
 // Compact three-way split bar (home / draw / away) sitting under the
@@ -78,6 +77,9 @@ function FormBadge({ form }: { form: string }) {
 function FixtureRow({ fixture, showLeague }: { fixture: FixtureTableRowData; showLeague: boolean }) {
   const prediction = fixture.prediction;
   const outcome = prediction ? predictedOutcome(prediction) : null;
+  const percents = prediction
+    ? splitPercents(prediction.homeWinProbability, prediction.drawProbability, prediction.awayWinProbability)
+    : null;
 
   return (
     <tr className="border-t border-border odd:bg-surface even:bg-background/60 hover:bg-primary-soft">
@@ -111,17 +113,17 @@ function FixtureRow({ fixture, showLeague }: { fixture: FixtureTableRowData; sho
           </td>
           <td className="px-2 py-3 text-center text-border-strong">–</td>
         </>
-      ) : prediction && outcome ? (
+      ) : prediction && outcome && percents ? (
         <>
-          <td className="px-2 py-3 text-center font-semibold tnum">{formatPercent(prediction.homeWinProbability)}</td>
-          <td className="px-2 py-3 text-center font-semibold tnum">{formatPercent(prediction.drawProbability)}</td>
-          <td className="px-2 py-3 text-center font-semibold tnum">{formatPercent(prediction.awayWinProbability)}</td>
+          <td className="px-2 py-3 text-center font-semibold tnum">{percents[0]}%</td>
+          <td className="px-2 py-3 text-center font-semibold tnum">{percents[1]}%</td>
+          <td className="px-2 py-3 text-center font-semibold tnum">{percents[2]}%</td>
           <td className="px-2 py-3 text-center">
             <div className="flex flex-col items-center gap-0.5">
               <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
                 {outcome}
               </span>
-              <span className="text-[10px] leading-tight text-tertiary">{confidenceTier(prediction.confidence)}</span>
+              <span className="text-[10px] leading-tight text-tertiary">{confidenceTier(prediction)}</span>
             </div>
           </td>
           <td className="px-2 py-3 text-center">
@@ -180,8 +182,8 @@ export function FixtureTable({
             <th className="px-2 py-3 text-center">X</th>
             <th className="px-2 py-3 text-center">2</th>
             <th className="px-2 py-3 text-center">Pred</th>
-            <th className="px-2 py-3 text-center">Score</th>
-            <th className="px-2 py-3 text-center">Avg goals</th>
+            <th className="px-2 py-3 text-center" title="The single most likely scoreline">Likely score</th>
+            <th className="px-2 py-3 text-center" title="Expected total goals: the average across all possible scorelines">Exp. goals</th>
           </tr>
         </thead>
         <tbody>

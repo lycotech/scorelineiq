@@ -23,7 +23,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       over25Probability: num(formData, "over25Probability") / 100,
       bttsProbability: num(formData, "bttsProbability") / 100,
       expectedGoals: num(formData, "expectedGoals"),
-      confidence: num(formData, "confidence"),
     });
     redirectUrl.searchParams.set("result", "saved");
   } catch (error) {
