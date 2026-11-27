@@ -1,15 +1,12 @@
 import { ImageResponse } from "next/og";
 import { getFixtureBySlug } from "../../../lib/queries";
+import { splitPercents } from "../../../lib/prediction-display";
 
 // Prisma's client needs Node APIs, not available on the Edge runtime
 // ImageResponse defaults to.
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-
-function pct(value: number): string {
-  return `${Math.round(value * 100)}%`;
-}
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -40,6 +37,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   }
 
   const p = fixture.prediction;
+  const shown = p ? splitPercents(p.homeWinProbability, p.drawProbability, p.awayWinProbability) : [0, 0, 0];
   const homeName = fixture.homeTeam.name;
   const awayName = fixture.awayTeam.name;
 
@@ -89,23 +87,23 @@ export default async function Image({ params }: { params: Promise<{ slug: string
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", fontSize: 20, color: "#64748b" }}>Home</div>
                 <div style={{ display: "flex", fontSize: 40, fontWeight: 700, color: "#2563eb" }}>
-                  {pct(p.homeWinProbability)}
+                  {shown[0]}%
                 </div>
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", fontSize: 20, color: "#64748b" }}>Draw</div>
                 <div style={{ display: "flex", fontSize: 40, fontWeight: 700, color: "#2563eb" }}>
-                  {pct(p.drawProbability)}
+                  {shown[1]}%
                 </div>
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", fontSize: 20, color: "#64748b" }}>Away</div>
                 <div style={{ display: "flex", fontSize: 40, fontWeight: 700, color: "#2563eb" }}>
-                  {pct(p.awayWinProbability)}
+                  {shown[2]}%
                 </div>
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", fontSize: 20, color: "#64748b" }}>Predicted score</div>
+                <div style={{ display: "flex", fontSize: 20, color: "#64748b" }}>Most likely score</div>
                 <div style={{ display: "flex", fontSize: 40, fontWeight: 700, color: "#0f172a" }}>
                   {p.predictedScoreHome}-{p.predictedScoreAway}
                 </div>

@@ -6,6 +6,7 @@ import { generateMatchNarrative } from "../../../lib/narrative";
 import { formatKickoff, formatPercent, toDateParam, formatDateHeading } from "../../../lib/format";
 import { AdSlot } from "../../../components/AdSlot";
 import { FixtureTable } from "../../../components/FixtureTable";
+import { splitPercents } from "../../../lib/prediction-display";
 
 export const revalidate = 300;
 
@@ -39,18 +40,15 @@ function eventStatusLd(status: string): string {
   return "https://schema.org/EventScheduled";
 }
 
-function ProbabilityBar({ label, value }: { label: string; value: number }) {
+function ProbabilityBar({ label, percent }: { label: string; percent: number }) {
   return (
     <div>
       <div className="flex justify-between text-xs text-zinc-500">
         <span>{label}</span>
-        <span>{formatPercent(value)}</span>
+        <span>{percent}%</span>
       </div>
       <div className="mt-1 h-2 overflow-hidden rounded-full bg-primary-soft">
-        <div
-          className="h-full rounded-full bg-primary"
-          style={{ width: `${Math.round(value * 100)}%` }}
-        />
+        <div className="h-full rounded-full bg-primary" style={{ width: `${percent}%` }} />
       </div>
     </div>
   );
@@ -62,6 +60,13 @@ export default async function MatchPage({ params }: PageProps) {
   if (!fixture) notFound();
 
   const narrative = generateMatchNarrative(fixture.homeTeam, fixture.awayTeam, fixture.prediction);
+  const matchPercents: [number, number, number] = fixture.prediction
+    ? splitPercents(
+        fixture.prediction.homeWinProbability,
+        fixture.prediction.drawProbability,
+        fixture.prediction.awayWinProbability,
+      )
+    : [0, 0, 0];
   const otherFixtures = await getOtherUpcomingFixturesInLeague(fixture.league.id, fixture.id);
   const kickoffDateParam = toDateParam(fixture.kickoffAt);
 
@@ -150,21 +155,21 @@ export default async function MatchPage({ params }: PageProps) {
               Match result (1X2)
             </h2>
             <div className="flex flex-col gap-3">
-              <ProbabilityBar label={`${fixture.homeTeam.name} win`} value={fixture.prediction.homeWinProbability} />
-              <ProbabilityBar label="Draw" value={fixture.prediction.drawProbability} />
-              <ProbabilityBar label={`${fixture.awayTeam.name} win`} value={fixture.prediction.awayWinProbability} />
+              <ProbabilityBar label={`${fixture.homeTeam.name} win`} percent={matchPercents[0]} />
+              <ProbabilityBar label="Draw" percent={matchPercents[1]} />
+              <ProbabilityBar label={`${fixture.awayTeam.name} win`} percent={matchPercents[2]} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
             <div className="rounded-lg border border-border p-3">
-              <div className="text-xs text-zinc-500">Predicted score</div>
+              <div className="text-xs text-zinc-500">Most likely score</div>
               <div className="mt-1 text-xl font-semibold text-primary">
                 {fixture.prediction.predictedScoreHome}-{fixture.prediction.predictedScoreAway}
               </div>
             </div>
             <div className="rounded-lg border border-border p-3">
-              <div className="text-xs text-zinc-500">Avg. goals</div>
+              <div className="text-xs text-zinc-500">Expected goals</div>
               <div className="mt-1 text-xl font-semibold text-primary">
                 {fixture.prediction.expectedGoals !== null ? fixture.prediction.expectedGoals.toFixed(2) : "–"}
               </div>
@@ -179,9 +184,18 @@ export default async function MatchPage({ params }: PageProps) {
             </div>
             <div className="rounded-lg border border-border p-3">
               <div className="text-xs text-zinc-500">Confidence</div>
-              <div className="mt-1 text-xl font-semibold text-primary">{fixture.prediction.confidence.toFixed(0)}%</div>
+              <div className="mt-1 text-xl font-semibold text-primary">{Math.max(...matchPercents)}%</div>
             </div>
           </div>
+          <p className="text-xs text-zinc-500">
+            <strong>Confidence</strong> is the probability the model gives its most likely result
+            above. <strong>Most likely score</strong> is the single most probable scoreline, and
+            <strong> expected goals</strong> is the average number of goals across every scoreline
+            the model considers — so they can differ, and the most likely score can even be a draw
+            when one side is favoured, because a draw is just one scoreline among many. Score,
+            goals, over/under and BTTS come from the goal model alone; only the 1X2 split is
+            adjusted by team Elo ratings.
+          </p>
         </section>
       ) : (
         <div className="rounded-lg border border-dashed border-border-strong p-6 text-center text-zinc-500">

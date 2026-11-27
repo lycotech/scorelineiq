@@ -20,18 +20,28 @@ def test_expected_goals_requires_positive_league_average():
         poisson.expected_goals(1, 1, 1, 1, league_avg_goals=0)
 
 
-def test_expected_goals_average_team_scores_league_average():
-    # An average team (attack/defense ratios of 1) at home should score
-    # exactly league_avg_goals * HOME_ADVANTAGE, away scores exactly average.
-    lam, mu = poisson.expected_goals(
-        home_goals_for_avg=1.4,
-        home_goals_against_avg=1.4,
-        away_goals_for_avg=1.4,
-        away_goals_against_avg=1.4,
-        league_avg_goals=1.4,
-    )
-    assert lam == pytest.approx(1.4 * poisson.HOME_ADVANTAGE)
-    assert mu == pytest.approx(1.4)
+def test_expected_goals_average_teams_sum_to_twice_league_average():
+    # Two average teams (attack/defense ratios of 1) must produce the
+    # league's average total goals: home + away == 2 * league_avg_goals.
+    # (v1 gave 1.175 * that, over-stating goals for every fixture.)
+    for league_avg in (1.2, 1.4, 1.6):
+        lam, mu = poisson.expected_goals(league_avg, league_avg, league_avg, league_avg, league_avg)
+        assert lam + mu == pytest.approx(2 * league_avg)
+
+
+def test_expected_goals_keeps_home_advantage_ratio():
+    lam, mu = poisson.expected_goals(1.4, 1.4, 1.4, 1.4, league_avg_goals=1.4)
+    assert lam / mu == pytest.approx(poisson.HOME_ADVANTAGE)
+    assert lam > mu
+
+
+def test_expected_goals_same_matchup_either_venue_differs_only_by_home_ratio():
+    # Team A (scores 1.8, concedes 1.0) vs team B (1.1, 1.5). A's expected
+    # goals against B's defence are the same number in both fixtures
+    # except for the venue factor, so the ratio is exactly HOME_ADVANTAGE.
+    a_home, _ = poisson.expected_goals(1.8, 1.0, 1.1, 1.5, league_avg_goals=1.4)
+    _, a_away = poisson.expected_goals(1.1, 1.5, 1.8, 1.0, league_avg_goals=1.4)
+    assert a_home / a_away == pytest.approx(poisson.HOME_ADVANTAGE)
 
 
 def test_scoreline_matrix_sums_to_one():

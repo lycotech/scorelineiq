@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getPredictionHistory, HISTORY_ROW_LIMIT } from "../../lib/queries";
 import { formatKickoff, formatPercent, formatShortDate, parseDateParam, toDateParam } from "../../lib/format";
+import { splitPercents } from "../../lib/prediction-display";
 
 // See src/app/page.tsx for why this is dynamic rather than static+ISR.
 export const dynamic = "force-dynamic";
@@ -102,7 +103,7 @@ export default async function HistoryPage({
                   <th className="py-2 pr-3">Kickoff</th>
                   <th className="py-2 pr-3">Match</th>
                   <th className="py-2 pr-3">Home / Draw / Away</th>
-                  <th className="py-2 pr-3">Score</th>
+                  <th className="py-2 pr-3">Likely score</th>
                   <th className="py-2 pr-3">O2.5 / BTTS</th>
                   <th className="py-2 pr-3">Recorded (UTC)</th>
                   <th className="py-2">Result</th>
@@ -111,6 +112,7 @@ export default async function HistoryPage({
               <tbody>
                 {history.rows.map((r) => {
                   const predicted = outcomeLabel(r.homeWinProbability, r.drawProbability, r.awayWinProbability);
+                  const shown = splitPercents(r.homeWinProbability, r.drawProbability, r.awayWinProbability);
                   return (
                     <tr key={r.fixtureSlug} className="border-t border-border align-top">
                       <td className="py-2 pr-3 whitespace-nowrap">{formatKickoff(r.kickoffAt)}</td>
@@ -121,8 +123,7 @@ export default async function HistoryPage({
                         <div className="text-xs text-zinc-400">{r.leagueName}</div>
                       </td>
                       <td className="py-2 pr-3 whitespace-nowrap">
-                        {formatPercent(r.homeWinProbability)} / {formatPercent(r.drawProbability)} /{" "}
-                        {formatPercent(r.awayWinProbability)}
+                        {shown[0]}% / {shown[1]}% / {shown[2]}%
                         <div className="text-xs text-zinc-400">Leans: {predicted}</div>
                       </td>
                       <td className="py-2 pr-3 whitespace-nowrap">

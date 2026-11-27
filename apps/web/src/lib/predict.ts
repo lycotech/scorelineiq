@@ -1,6 +1,11 @@
 import { prisma } from "@scorelineiq/db";
 import { triggerRevalidate } from "./revalidate";
 import { KickoffPassedError, savePredictionWithSnapshot } from "./snapshots";
+import {
+  derivedConfidence,
+  validateManualPrediction,
+  type ManualPredictionFields,
+} from "./prediction-display";
 
 export interface PredictResponse {
   home_win_probability: number;
@@ -135,16 +140,16 @@ export async function generatePredictionForFixture(fixtureId: string): Promise<G
   return { status: "generated", prediction };
 }
 
-export interface ManualPredictionInput {
-  homeWinProbability: number;
-  drawProbability: number;
-  awayWinProbability: number;
-  predictedScoreHome: number;
-  predictedScoreAway: number;
-  over25Probability: number;
-  bttsProbability: number;
-  expectedGoals: number;
-  confidence: number;
+// `confidence` is deliberately absent: it is derived from the 1X2 numbers
+// so a manual entry can never claim a confidence its own probabilities
+// don't support.
+export type ManualPredictionInput = ManualPredictionFields;
+
+export class InvalidManualPredictionError extends Error {
+  constructor(public problems: string[]) {
+    super(problems.join("; "));
+    this.name = "InvalidManualPredictionError";
+  }
 }
 
 // Manual entries are tagged with a distinct modelVersion so the public
@@ -152,6 +157,9 @@ export interface ManualPredictionInput {
 // it will literally say "manual-override" rather than implying the
 // Poisson/Elo model produced this number.
 export async function saveManualPrediction(fixtureId: string, input: ManualPredictionInput) {
+  const problems = validateManualPrediction(input);
+  if (problems.length > 0) throw new InvalidManualPredictionError(problems);
+
   const fixture = await prisma.fixture.findUniqueOrThrow({
     where: { id: fixtureId },
     select: { id: true, slug: true },
@@ -161,6 +169,7 @@ export async function saveManualPrediction(fixtureId: string, input: ManualPredi
   await prisma.$transaction((tx) =>
     savePredictionWithSnapshot(tx, fixture.id, {
       ...input,
+      confidence: derivedConfidence(input.homeWinProbability, input.drawProbability, input.awayWinProbability),
       modelVersion: "manual-override",
     }),
   );
