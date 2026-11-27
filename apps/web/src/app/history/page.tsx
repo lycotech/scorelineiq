@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getPredictionHistory, HISTORY_ROW_LIMIT } from "../../lib/queries";
+import { getCoverage, getPredictionHistory, HISTORY_ROW_LIMIT } from "../../lib/queries";
+import { totalCoverage, utcDay } from "../../lib/coverage";
 import { formatKickoff, formatPercent, formatShortDate, parseDateParam, toDateParam } from "../../lib/format";
 import { splitPercents } from "../../lib/prediction-display";
 
@@ -45,7 +46,15 @@ export default async function HistoryPage({
   const [lo, hi] = fromDate <= toDate ? [fromDate, toDate] : [toDate, fromDate];
 
   // `to` is inclusive of that whole day.
-  const history = await getPredictionHistory(lo, new Date(hi.getTime() + DAY_MS));
+  const end = new Date(hi.getTime() + DAY_MS);
+  const [history, coverageDays] = await Promise.all([getPredictionHistory(lo, end), getCoverage(lo, end)]);
+
+  // Days before the first recorded snapshot predate the record itself,
+  // so they are listed but kept out of the coverage totals.
+  const recordDay = history.recordStartedAt ? utcDay(history.recordStartedAt) : null;
+  const inRecord = coverageDays.filter((d) => recordDay !== null && d.day >= recordDay);
+  const beforeRecord = coverageDays.filter((d) => recordDay === null || d.day < recordDay);
+  const totals = totalCoverage(inRecord);
 
   return (
     <div className="flex flex-col gap-6">
@@ -84,6 +93,76 @@ export default async function HistoryPage({
           Show
         </button>
       </form>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">Coverage</h2>
+        {totals.due === 0 ? (
+          <p className="text-sm text-zinc-500">
+            No completed matches in the recorded period fall inside this date range.
+          </p>
+        ) : (
+          <>
+            <p className="max-w-2xl text-sm text-zinc-500">
+              <span className="font-semibold text-neutral">
+                {totals.predicted} of {totals.due} matches ({Math.round((totals.predictedShare ?? 0) * 100)}%)
+              </span>{" "}
+              had a prediction recorded before kickoff.{" "}
+              {totals.notPredicted > 0
+                ? `${totals.notPredicted} did not — usually because a team's season stats weren't available yet, so the site showed "prediction pending" — and they are not scored. `
+                : ""}
+              {totals.graded} predicted match{totals.graded === 1 ? "" : "es"} have a final result recorded
+              {totals.awaitingResult > 0 ? `; ${totals.awaitingResult} are still awaiting a result` : ""}.
+              {totals.staleUngraded > 0
+                ? ` ${totals.staleUngraded} of those are more than a day old, which means our scoring is behind — we monitor this daily.`
+                : ""}
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left text-sm">
+                <thead className="text-xs uppercase tracking-wide text-zinc-500">
+                  <tr>
+                    <th className="py-2 pr-3">Day (UTC)</th>
+                    <th className="py-2 pr-3 text-right">Matches</th>
+                    <th className="py-2 pr-3 text-right">Predicted</th>
+                    <th className="py-2 pr-3 text-right">Not predicted</th>
+                    <th className="py-2 pr-3 text-right">Graded</th>
+                    <th className="py-2 pr-3 text-right">Awaiting result</th>
+                    <th className="py-2 text-right">Provider check</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inRecord
+                    .filter((d) => d.due > 0 || (d.provider && d.provider.providerFinished > 0))
+                    .map((d) => (
+                      <tr key={d.day} className="border-t border-border">
+                        <td className="py-2 pr-3 whitespace-nowrap">{d.day}</td>
+                        <td className="py-2 pr-3 text-right">{d.due}</td>
+                        <td className="py-2 pr-3 text-right">{d.predicted}</td>
+                        <td className="py-2 pr-3 text-right">{d.notPredicted}</td>
+                        <td className="py-2 pr-3 text-right">{d.graded}</td>
+                        <td className="py-2 pr-3 text-right">{d.awaitingResult}</td>
+                        <td className="py-2 text-right text-xs text-zinc-500">
+                          {d.provider
+                            ? d.provider.missingFromDb === 0
+                              ? `${d.provider.providerFinished} listed, none missing`
+                              : `${d.provider.missingFromDb} of ${d.provider.providerFinished} missing`
+                            : "not checked"}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-zinc-400">
+              &ldquo;Matches&rdquo; counts games that kicked off at least 3 hours ago, excluding
+              postponed and cancelled ones. &ldquo;Provider check&rdquo; compares each day with the
+              finished matches listed by our data provider; it runs daily for the most recent week.
+              {beforeRecord.some((d) => d.due > 0)
+                ? ` Matches before ${recordDay ?? "the record began"} are left out: no pre-kickoff record exists for them.`
+                : ""}
+            </p>
+          </>
+        )}
+      </section>
 
       {history.rows.length === 0 ? (
         <p className="text-zinc-500">

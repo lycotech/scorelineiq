@@ -130,7 +130,14 @@ async function scoreResults(dateFrom: string, dateTo: string) {
 
 async function main() {
   const now = new Date();
-  const dateFrom = formatDate(new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000));
+  // Default 3 days. After an outage, run once by hand with a longer
+  // look-back to grade matches the normal window has already passed:
+  //   SCORE_LOOKBACK_DAYS=7 npm run score-results --workspace=web
+  // Capped at 7 so the whole request stays within the 9-day span the
+  // provider is known to accept.
+  const requested = Number(process.env.SCORE_LOOKBACK_DAYS ?? 3);
+  const lookbackDays = Number.isInteger(requested) && requested >= 1 ? Math.min(requested, 7) : 3;
+  const dateFrom = formatDate(new Date(now.getTime() - lookbackDays * 24 * 60 * 60 * 1000));
   // Football-Data.org's dateTo appears to exclude same-day matches near
   // the UTC day boundary (confirmed empirically: a dateTo of "today"
   // silently dropped an in-progress match kicked off earlier today) —

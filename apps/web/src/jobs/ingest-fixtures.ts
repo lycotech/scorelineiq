@@ -99,6 +99,23 @@ async function main() {
   console.log(
     `[ingest-fixtures] done: ${result.upserted} upserted, ${result.skipped} skipped (no team assigned), ${result.total} total`,
   );
+
+  // Second, short request for the last few days, run AFTER the forward
+  // window so a failure here can never block tomorrow's predictions.
+  // A match announced late (cup replay, rescheduled game) or missed
+  // during an outage never appears in the forward window, so without
+  // this it would stay invisible to every count. Ingested this way it
+  // has no pre-kickoff prediction, so it shows up as "not predicted" in
+  // the coverage record instead of silently not existing. Kept as its
+  // own request so the forward window's span (already proven against the
+  // provider) is unchanged.
+  const backfillFrom = formatDate(new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000));
+  const backfillTo = formatDate(new Date(now.getTime() - 24 * 60 * 60 * 1000));
+  console.log(`[ingest-fixtures] backfilling recent matches from ${backfillFrom} to ${backfillTo}`);
+  const backfill = await ingestFixtures(backfillFrom, backfillTo);
+  console.log(
+    `[ingest-fixtures] backfill: ${backfill.upserted} upserted, ${backfill.skipped} skipped, ${backfill.total} total`,
+  );
 }
 
 runJob("ingest-fixtures", main);

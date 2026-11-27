@@ -158,6 +158,19 @@ model EvaluationPlan {
   @@index([createdAt])
 }
 
+// One row per UTC kickoff day, written by the coverage-audit job:
+// how many matches the data provider says finished that day, and how
+// many of those we had no fixture for. Upserted (idempotent) — it is a
+// monitoring figure as of `checkedAt`, not an append-only record. A row
+// existing for every day is also the evidence the audit ran daily.
+model CoverageDay {
+  id               String   @id @default(cuid())
+  day              DateTime @unique
+  providerFinished Int
+  missingFromDb    Int
+  checkedAt        DateTime @default(now())
+}
+
 enum ResultOutcome {
   HOME_WIN
   DRAW
