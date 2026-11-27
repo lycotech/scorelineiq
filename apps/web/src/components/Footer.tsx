@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllLeaguesWithUpcomingCounts } from "../lib/queries";
+import { SITE_INFO } from "../lib/site-info";
 
 const FOOTER_LINKS = [
   { href: "/about", label: "About" },
@@ -48,7 +49,8 @@ export async function Footer() {
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-tertiary">
-            &copy; {new Date().getFullYear()} ScorelineIQ. Statistical analysis, not betting advice.
+            &copy; {new Date().getFullYear()} ScorelineIQ. Statistical analysis, not betting advice.{" "}
+            {SITE_INFO.minimumAge}+ only. Gamble responsibly.
           </p>
           <nav className="flex flex-wrap gap-4 text-sm text-tertiary">
             {FOOTER_LINKS.map((link) => (
